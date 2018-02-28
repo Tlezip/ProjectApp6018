@@ -3,7 +3,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var app = express();
 var router = require('./route/route.js')
-var db = require('./db');
+// var db = require('./db');
 // var testt = require('./Controller/loginController')
 app.use(session({
     secret: 'keyboard cat',
