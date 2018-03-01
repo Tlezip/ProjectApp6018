@@ -46,6 +46,10 @@ sendReservation("ECC810", (val) => {
 			socket.write(val)
 			socket.on('data', function(data){
 				data = data.toString()
+				if( data.localeCompare("Node Received Reservation") == 0){
+					console.log('in here');
+					server.close();
+				}
 				console.log(data)
 			});
 		});
