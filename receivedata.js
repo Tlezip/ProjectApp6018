@@ -1,5 +1,5 @@
-var net = require("net");
-const utf8 = require('utf8');
+var net = require("net")
+const utf8 = require('utf8')
 
 const db = require('./db')
 // console.log(Date.now())
@@ -13,7 +13,7 @@ const sendReservation = (roomName, callback) => {
 	db.query("SELECT * from RequestDetail WHERE roomname = '" + roomName + "' AND timeStart <= '" + currentTImeString +"'", (err, result) => {
 		if (err) throw err
 		// let reservation = roomName + '\n'
-		// console.log(result)
+		console.log(result)
 		// console.log(result.length)
 		result.forEach(({ uid, timeStart, timeEnd }) => {
 			reservation += (uid + "," + timeStart.getTime() + "," + timeEnd.getTime() + "\n")
