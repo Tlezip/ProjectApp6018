@@ -8,12 +8,15 @@ const currentTime = new Date()
 // console.log(currentTime.getMonth() +1 )
 const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
 // console.log(currentTImeString)
+db.query("SELECT * from RequestDetail", (err, result) => {
+console.log(result)
+})
 const sendReservation = (roomName) => {
 	let reservation = roomName + '\n'
-	db.query("SELECT * from requestdetail WHERE roomname = '" + roomName + "' AND timeStart <= '" + currentTImeString +"'", (err, result) => {
+	db.query("SELECT * from RequestDetail WHERE roomname = '" + roomName + "' AND timeStart <= '" + currentTImeString +"'", (err, result) => {
 		if (err) throw err
 		// let reservation = roomName + '\n'
-		// console.log(result)
+		console.log(result)
 		// console.log(result.length)
 		result.forEach(({ uid, timeStart, timeEnd }) => {
 			reservation += (uid + "," + timeStart.getTime() + "," + timeEnd.getTime() + "\n")
