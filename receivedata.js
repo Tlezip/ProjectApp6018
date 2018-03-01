@@ -38,23 +38,41 @@ const sendReservation = (roomName, callback) => {
 	})
 	// console.log('down :',reservation)
 }
-// let list = sendReservation.call()
-// let result = callFn.call()
-// console.log('call fn : ', sendReservation("ECC810"))
-sendReservation("ECC810", (val) => {
+
+const receiveLog = () => {
 	var server = net.createServer(function(socket) {
-			socket.write(val)
-			socket.on('data', function(data){
-				data = data.toString()
-				if( data.localeCompare("Node Received Reservation") == 0){
-					console.log('in here');
-					server.close();
-				}
-				console.log(data)
-			});
-		});
+		socket.on('data', function(data){
+			data = data.toString()
+			// if( data.localeCompare("Node Received Reservation") == 0){
+			// 	server.close()
+			// }
+			arrayOfData = data.split(/,|\n/)
+			console.log(arrayOfData)
+			socket.write('Server Received Log')
+			console.log(data)
+		})
+	})
+	
+	server.listen(8100, function(){
+		console.log('Now listening')
+	})
+}
+
+receiveLog()
+
+// sendReservation("ECC810", (val) => {
+// 	var server = net.createServer(function(socket) {
+// 			socket.write(val)
+// 			socket.on('data', function(data){
+// 				data = data.toString()
+// 				if( data.localeCompare("Node Received Reservation") == 0){
+// 					server.close()
+// 				}
+// 				console.log(data)
+// 			})
+// 		})
 		
-		server.listen(8100, function(){
-			console.log('Now listening');
-		});
-})
+// 		server.listen(8100, function(){
+// 			console.log('Now listening')
+// 		})
+// })
