@@ -8,7 +8,7 @@ const currentTime = new Date()
 // console.log(currentTime.getMonth() +1 )
 const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
 // console.log(currentTImeString)
-const sendReservation = (roomName) => {
+const sendReservation = (roomName, callback) => {
 	let reservation = roomName + '\n'
 	db.query("SELECT * from RequestDetail WHERE roomname = '" + roomName + "' AND timeStart <= '" + currentTImeString +"'", (err, result) => {
 		if (err) throw err
@@ -21,9 +21,29 @@ const sendReservation = (roomName) => {
 			
 			// console.log(RoomName, timeStart.getTime())
 		})
-		console.log('in fn',reservation)
-		var server = net.createServer(function(socket) {
-			socket.write(reservation)
+		// console.log('in fn',reservation)
+		callback(reservation)
+		// var server = net.createServer(function(socket) {
+		// 	socket.write(reservation)
+		// 	socket.on('data', function(data){
+		// 		data = data.toString()
+		// 		console.log(data)
+		// 	});
+		// });
+		
+		// server.listen(8100, function(){
+		// 	console.log('Now listening');
+		// });
+		
+	})
+	// console.log('down :',reservation)
+}
+// let list = sendReservation.call()
+// let result = callFn.call()
+// console.log('call fn : ', sendReservation("ECC810"))
+sendReservation("ECC810", (val) => {
+	var server = net.createServer(function(socket) {
+			socket.write(val)
 			socket.on('data', function(data){
 				data = data.toString()
 				console.log(data)
@@ -33,11 +53,4 @@ const sendReservation = (roomName) => {
 		server.listen(8100, function(){
 			console.log('Now listening');
 		});
-		
-	})
-	// console.log('down :',reservation)
-}
-// let list = sendReservation.call()
-// let result = callFn.call()
-// console.log('call fn : ', sendReservation("ECC810"))
-sendReservation("ECC810")
+})
