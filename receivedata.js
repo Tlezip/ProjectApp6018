@@ -48,8 +48,16 @@ const receiveLog = () => {
 			// }
 			arrayOfData = data.split(/,|\n|\r|\s/)
 			const result = arrayOfData.filter(word => word.localeCompare(''))
-			console.log(result)			
-socket.write('Server Received Log')
+			const roomName = result[0]
+			for (var i=1 ; i<result.length && i+2 < result.length ; i++){
+				var sql = "INSERT INTO Log (uid, Room, Time) VALUES ('" + result[i] + "','" + result[i+1] + "','" + result[i+2] + "')"
+				db.query(sql , (err, result) => {
+					if (err) throw err
+					console.log("inserted into LOG")
+				})
+			}
+			console.log(result)
+			socket.write('Server Received Log')
 			console.log(data)
 		})
 	})
