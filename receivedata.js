@@ -46,9 +46,10 @@ const receiveLog = () => {
 			// if( data.localeCompare("Node Received Reservation") == 0){
 			// 	server.close()
 			// }
-			arrayOfData = data.split(/,|\n/)
-			console.log(arrayOfData)
-			socket.write('Server Received Log')
+			arrayOfData = data.split(/,|\n|\r|\s/)
+			const result = arrayOfData.filter(word => word.localeCompare(''))
+			console.log(result)			
+socket.write('Server Received Log')
 			console.log(data)
 		})
 	})
