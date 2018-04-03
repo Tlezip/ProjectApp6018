@@ -2,7 +2,6 @@ const db = require('../db')
 
 
 exports.homepage = (req, res) => {
-    console.log(req.session)
     // console.log('123')
     const currentTime = new Date()
     const username = req.session.username
@@ -20,7 +19,6 @@ exports.homepage = (req, res) => {
             const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
             db.query("SELECT * FROM Request WHERE RequestID IN (" + requestID + ") AND timeEnd >= '" + currentTImeString + "' AND Status <> 'Rejected'" , (err, result) => {
                 // console.log(result)
-                console.log(result)
                 return res.json(result)
             })
         })
@@ -103,5 +101,11 @@ exports.reservation = (req, res) => {
             res.json({ room: RoomName, reservation: result })
         })
         // db.query("SELECT ")
+    })
+}
+
+exports.responseReservePage = (req,res) => {
+    db.query("SELECT request.RequestID, request.uid, request.TypeReserve, request.Day, request.timeStart, request.timeEnd, request.Described, request.Status, UserDetail.Name, GroupRoom.RoomName FROM request, UserDetail, GroupRoom WHERE request.uid = UserDetail.uid AND request.RequestID = grouproom.RequestID", (err, result) => {
+        res.json(result)
     })
 }

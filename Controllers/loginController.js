@@ -2,7 +2,6 @@ const db = require('../db')
 const path = require("path")
 
 exports.logout = (req, res) => {
-    console.log('123')
     req.session.destroy()
     return res.json({ auth: false})
 }
@@ -41,7 +40,6 @@ exports.postLogin = (req, res) => {
         if(req.body.username && req.body.username === Username && req.body.password === Password ){
             req.session.username = req.body.username;
             req.session.authenticated = true;
-            console.log('eiei')
             return res.status(200).json({ auth: true, username: req.session.username })
         }
         else{
