@@ -1,9 +1,14 @@
 exports.auth = (req, res, next) => {
+    // req.cookies['connect.sid'] = req.query.sessionId;
+    // console.log(req.headers)
+    // console.log(req.session)
     if(req.session && req.session.authenticated){
         return next();
     }
-    else
-        return res.redirect('/login');
+    else{
+        console.log('inauthfalse')
+        res.json({ auth: false})
+    }
 }
 
 exports.no_auth = (req, res, next) => {
@@ -11,6 +16,7 @@ exports.no_auth = (req, res, next) => {
         req.session.authenticated = false
         return next()
     }
-    else
-        return res.redirect('/');
+    else{
+        return res.json({ auth: true})
+    }
 }

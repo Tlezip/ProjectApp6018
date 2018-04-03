@@ -3,12 +3,18 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var app = express();
 var router = require('./route/route.js')
+var cookieParser = require('cookie-parser')
 // var db = require('./db');
 // var testt = require('./Controller/loginController')
 app.use(session({
     secret: 'keyboard cat',
-    authenticated: false
+    authenticated: false,
+    cookie: { httpOnly: false,
+        secure: false},
   }))
+
+  
+app.use(cookieParser())
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -16,6 +22,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 app.use('/', router)
+
+app.use(express.static(__dirname + '/public'))
 
 // ฟังค์ชัน สำหรับรับ request จาก client และส่ง response กลับไปยัง client
 // req คือ request และ res คือ response
