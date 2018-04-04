@@ -49,9 +49,10 @@ const receiveLog = () => {
 			// }
 			arrayOfData = data.split(/,|\n|\r/)
 			const result = arrayOfData.filter(word => word.localeCompare(''))
+			const roomName = result[0]
 			//console.log('length :', result.length)
 			//console.log(roomName)
-			for (var i=0 ; i<result.length && i+3 <= result.length ; i+=3){
+			for (var i=1 ; i<result.length && i+3 <= result.length ; i+=3){
 				if(result[i] == ''){
 					console.log(i)
 				}
