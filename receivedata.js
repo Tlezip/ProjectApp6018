@@ -44,6 +44,13 @@ const receiveLog = () => {
 		socket.write("TEST ECC810")
 		socket.on('data', function(data){
 			data = data.toString()
+			//if(data.localeCompare("finish") == 0){
+			//	console.log('qwewerwrqerqw')
+			//	setTimeout(function(){
+			//	}, 10000)
+			//	socket.end()
+			//	server.close()
+			//}
 			// if( data.localeCompare("Node Received Reservation") == 0){
 			// 	server.close()
 			// }
@@ -65,6 +72,10 @@ const receiveLog = () => {
 					if (err) throw err
 					console.log("inserted into LOG")
 				})
+				if(result[i+3] == "finish"){
+					console.log('fdewgdfgsdfdfg')
+					socket.end()
+				}
 			}
 			console.log(result)
 			socket.write('Server Received Log')
@@ -74,6 +85,13 @@ const receiveLog = () => {
 				console.log(result)
 				console.log('\n********************* END ***************')
 			})
+		}, function() {
+			console.log('123456') 
+			socket.end()
+			server.close()
+		})
+		socket.on('end', () =>{
+			console.log('disconnect from server')
 		})
 	})
 	
