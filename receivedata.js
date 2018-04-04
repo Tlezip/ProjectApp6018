@@ -41,16 +41,26 @@ const sendReservation = (roomName, callback) => {
 
 const receiveLog = () => {
 	var server = net.createServer(function(socket) {
+		socket.write("TEST ECC810")
 		socket.on('data', function(data){
 			data = data.toString()
 			// if( data.localeCompare("Node Received Reservation") == 0){
 			// 	server.close()
 			// }
-			arrayOfData = data.split(/,|\n|\r|\s/)
+			arrayOfData = data.split(/,|\n|\r/)
 			const result = arrayOfData.filter(word => word.localeCompare(''))
 			const roomName = result[0]
-			for (var i=1 ; i<result.length && i+2 < result.length ; i++){
-				var sql = "INSERT INTO Log (uid, RoomName, Time) VALUES ('" + result[i] + "','" + result[i+1] + "','" + result[i+2] + "')"
+			//console.log('length :', result.length)
+			//console.log(roomName)
+			for (var i=1 ; i<result.length && i+3 <= result.length ; i+=3){
+				if(result[i] == ''){
+					console.log(i)
+				}
+				const epochTime = result[i+1]
+				const date = new Date(0)
+				date.setUTCSeconds(epochTime)
+				const dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+				var sql = "INSERT INTO Log (uid, RoomName, Time, Status) VALUES ('" + result[i] + "','" + result[0] + "','" + dateString + "','" + result[i+2] + "')"
 				db.query(sql , (err, result) => {
 					if (err) throw err
 					console.log("inserted into LOG")
@@ -58,7 +68,12 @@ const receiveLog = () => {
 			}
 			console.log(result)
 			socket.write('Server Received Log')
-			console.log(data)
+			//console.log(data)
+			console.log('******************* IN DB *************')
+			db.query("SELECT * FROM Log", (err, result) =>{
+				console.log(result)
+				console.log('\n********************* END ***************')
+			})
 		})
 	})
 	
@@ -85,3 +100,4 @@ receiveLog()
 // 			console.log('Now listening')
 // 		})
 // })
+
