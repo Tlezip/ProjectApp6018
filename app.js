@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var app = express();
+var mailer = require('express-mailer');
 var router = require('./route/route.js')
 var cookieParser = require('cookie-parser')
 // var db = require('./db');
@@ -21,9 +22,41 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+
+mailer.extend(app, {
+    from: 'no-reply@example.com',
+    host: 'smtp.gmail.com', // hostname 
+    secureConnection: true, // use SSL 
+    port: 465, // port for secure SMTP 
+    transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts 
+    auth: {
+      user: 'dlacsystem@gmail.com',
+      pass: 'admindlac'
+    }
+});
+
 app.use('/', router)
 
 app.use(express.static(__dirname + '/public'))
+
+// app.get('/qwerty', function (req, res, next) {
+//     app.mailer.send('email', {
+//       to: 'title0@hotmail.com', // REQUIRED. This can be a comma delimited string just like a normal email to field.  
+//       subject: 'Test Email', // REQUIRED. 
+//       otherProperty: 'Other Property'
+//     }, function (err) {
+//       if (err) {
+//         // handle error 
+//         console.log('dfsdgksdfgk')
+//         console.log(err);
+//         return;
+//       }
+//       console.log('dgfkdfl;ghkdfk')
+//     });
+//     return res.json({});
+// });
 
 // ฟังค์ชัน สำหรับรับ request จาก client และส่ง response กลับไปยัง client
 // req คือ request และ res คือ response

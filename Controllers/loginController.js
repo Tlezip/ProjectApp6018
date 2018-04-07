@@ -40,6 +40,9 @@ exports.postLogin = (req, res) => {
         if(req.body.username && req.body.username === Username && req.body.password === Password ){
             req.session.username = req.body.username;
             req.session.authenticated = true;
+            if( result[0].Admin == 1){
+                req.session.isAdmin = true;
+            }
             return res.status(200).json({ auth: true, username: req.session.username })
         }
         else{

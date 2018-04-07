@@ -32,15 +32,36 @@ exports.reserve = (req, res) => {
                     console.log(err)
                 }
                 console.log('Reserve Complete')
-                return res.json({ responseMessage: 'Reserve Complete'});
+                db.query("INSERT INTO GroupRoom (RequestID, RoomName) VALUES ('" + id + "','" + req.body.room + "')", (err, result) => {
+                    if(err){
+                        console.log(err)
+                    }
+                    return res.json({ responseMessage: 'Reserve Complete'});
+                })
             })
         })
     })
 }
 
 exports.cancelReserve = (req, res) => {
-    console.log(req.params.id)
-    return res.json({ responseMessage: 'cancel Complete'})
+    // console.log(req.params.id)
+    db.query("SELECT * FROM UserDetail,Request WHERE UserDetail.uid=Request.uid AND Request.RequestID= '" + req.params.id + "'", (err, result) => {
+        if(result){
+            console.log(result[0].Status)
+            if(result[0].Status === 'Approved'){
+                db.query("DELETE FROM RequestDetail WHERE RequestID = '" + req.params.id + "'", (err, result) => {
+                    return res.json({ responseMessage: 'cancel Complete'})
+                })
+            }
+            else{
+                return res.json({ responseMessage: 'cancel Complete'})
+            }
+            // db.query("UPDATE Request SET Status = 'cancel' WHERE RequestID = '" + req.params.id + "'", (err, result) => {
+            //     return res.json({ responseMessage: 'cancel Complete'})
+            // })
+        }
+    })
+    // return res.json({ responseMessage: 'cancel Complete'})
     // const { id } = req.params
     // const { username } = req.session
     // db.query("SELECT uid FROM Request WHERE RequestID = '" + id + "'", (err, result) => {

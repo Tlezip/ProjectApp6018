@@ -20,3 +20,14 @@ exports.no_auth = (req, res, next) => {
         return res.json({ auth: true})
     }
 }
+
+exports.isAdmin = (req, res, next) => {
+    if(req.session && req.session.authenticated){
+        if(req.session.isAdmin){
+            return next()
+        }
+        else{
+            return res.json({ isAdmin: false })
+        }
+    }
+}
