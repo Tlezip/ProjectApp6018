@@ -2,7 +2,7 @@ const db = require('../db')
 //for Admin
 exports.responseReserve = (req, res) => {
     const { id, status } = req.body
-    console.log(id,status)
+    // console.log(id,status)
     db.query("UPDATE Request SET Status = '" + status + "' WHERE RequestID = '" + id + "'", (err, result) => {
         console.log("Response Reserve Complete")
         if (status == "Approved") {
@@ -62,20 +62,61 @@ exports.responseReserve = (req, res) => {
                             return res.json({ responseMessage: 'Reserve Updated'})
                         })
                     }
-                    // for( timeStartepoch ; timeStartepoch < timeEndepoch ; timeStartepoch+=86400 ){
-                        
-                        
-                    // }
+                    else if((timeStartepoch.getDate() + 1) === timeEndepoch.getDate() && timeStartepochint+86400000 > timeEndepochint){
+                        const timeEndOneDay = timeStartepoch.getFullYear() + "-" + (timeStartepoch.getMonth()+1) + "-" + timeStartepoch.getDate() + " 23:59:59"
+                        const timeStartOneDay = timeEndepoch.getFullYear() + "-" + (timeEndepoch.getMonth()+1) + "-" + timeEndepoch.getDate() + " 00:00:00"
+                        db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartString + "','" + timeEndOneDay + "')", (err, result) => {
+                            db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartOneDay + "','" + timeEndString + "')", (err, result) => {
+                                return res.json({ responseMessage: 'Reserve Updated'})
+                            })
+                        })
+                    }
                 }
-                // console.log(typeof timeStart)
-                // console.log(timeStart, timeEnd)
-                // db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartString + "','" + timeEndString + "')", (err, result) => {
-                //     if(err){
-                //         console.log(err)
-                //     }
-                //     console.log("INSERT INTO RequestDetail Complete")
-                //     return res.json({ responseMessage: 'Reserve Updated'})
-                // })
+                else if(TypeReserve == 'Period' || TypeReserve == 'Repeat'){
+                    const { Day } = result[0]
+                    // console.log(day)
+                    const HourStart = timeStart.getHours()
+                    const MinuteStart = timeStart.getMinutes()
+                    const SecondStart = timeStart.getSeconds()
+                    const HourEnd = timeEnd.getHours()
+                    const MinuteEnd = timeEnd.getMinutes()
+                    const SecondEnd = timeEnd.getSeconds()
+                    timeStartepoch.setHours(0)
+                    timeStartepoch.setMinutes(0)
+                    timeStartepoch.setSeconds(0)
+                    timeEndepoch.setHours(0)
+                    timeEndepoch.setMinutes(0)
+                    timeEndepoch.setSeconds(0)
+                    timeStartepochint = timeStartepoch.getTime()
+                    timeEndepochint = timeEndepoch.getTime()
+                    const dayEnum = {
+                        Sunday: 0,
+                        Monday: 1,
+                        Tuesday: 2,
+                        Wednesday: 3,
+                        Thursday: 4,
+                        Friday: 5,
+                        Saturday: 6
+                    }
+                    for(timeStartepochint = timeStartepoch.getTime(); timeStartepochint <= timeEndepochint ; timeStartepochint += 86400000){
+                        // console.log(timeStartepoch.getDay(), dayEnum[day])
+                        timeStartepoch.setTime(timeStartepochint)
+                        const timeStartStringDay = timeStartepoch.getFullYear() + "-" + (timeStartepoch.getMonth()+1) + "-" + timeStartepoch.getDate() + " " + HourStart + ":" + MinuteStart + ":" + SecondStart
+                        const timeEndStringDay = timeStartepoch.getFullYear() + "-" + (timeStartepoch.getMonth()+1) + "-" + timeStartepoch.getDate() + " " + HourEnd + ":" + MinuteEnd + ":" + SecondEnd
+                        if(TypeReserve == 'Period'){
+                            console.log(timeStartepochint)
+                            db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartStringDay + "','" + timeEndStringDay + "')", (err, result) => {
+                            })
+                        }
+                        else if(TypeReserve == 'Repeat' && (timeStartepoch.getDay() == dayEnum[Day])){
+                            db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartStringDay + "','" + timeEndStringDay + "')", (err, result) => {
+                            })
+                        }
+                        if(timeStartepochint === timeEndepochint) {
+                            return res.json({ responseMessage: 'Reserve Updated'})
+                        }
+                    }
+                }
             })
         }
         else if(status == "Rejected"){

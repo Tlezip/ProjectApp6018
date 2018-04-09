@@ -5,30 +5,30 @@ exports.homepage = (req, res) => {
     // console.log('123')
     const currentTime = new Date()
     const username = req.session.username
-    db.query("SELECT uid from UserDetail WHERE Username = '" + username + "'", (err, result) => {
+    // db.query("SELECT uid from UserDetail WHERE Username = '" + username + "'", (err, result) => {
         // console.log(result.length)
         // console.log(result)
-        const uid = result[0].uid
-        db.query("SELECT RequestID FROM Member WHERE uid = '" + uid + "'", (err, result) => {
-            // console.log(JSON.stringify(result))
-            let requestID = []
-            result.map((data) => {
-                requestID.push(data.RequestID)
-            })
-            // console.log(requestID)
-            const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
-            db.query("SELECT * FROM Request WHERE RequestID IN (" + requestID + ") AND timeEnd >= '" + currentTImeString + "' AND Status <> 'Rejected'" , (err, result) => {
-                // console.log(result)
-                if(result){
-                    result.forEach((data) => {
-                        data.timeStart = data.timeStart.toLocaleString()
-                        data.timeEnd = data.timeEnd.toLocaleString()
-                    })
-                }
-                return res.json(result)
-            })
+    // const uid = result[0].uid
+    db.query("SELECT RequestID FROM Member WHERE Username = '" + req.session.username + "'", (err, result) => {
+        // console.log(JSON.stringify(result))
+        let requestID = []
+        result.map((data) => {
+            requestID.push(data.RequestID)
+        })
+        // console.log(requestID)
+        const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
+        db.query("SELECT * FROM Request WHERE RequestID IN (" + requestID + ") AND timeEnd >= '" + currentTImeString + "' AND Status <> 'Rejected'" , (err, result) => {
+            // console.log(result)
+            if(result){
+                result.forEach((data) => {
+                    data.timeStart = data.timeStart.toLocaleString()
+                    data.timeEnd = data.timeEnd.toLocaleString()
+                })
+            }
+            return res.json(result)
         })
     })
+    // })
     //db.query("SELECT Request ID from Member WHERE uid = '" + req.body.username + "'", (err, result)
 }
 
@@ -39,7 +39,7 @@ exports.reserveDetail = (req, res) => {
     const username = req.session.username
     db.query("SELECT uid, Name from UserDetail WHERE Username = '" + username + "'", (err, result) => {
         const { Name, uid } = result[0]
-        db.query("SELECT * from Member WHERE uid = '" + uid + "' AND RequestID = '" + requestID + "'", (err, result) => {
+        db.query("SELECT * from Member WHERE Username = '" + username + "' AND RequestID = '" + requestID + "'", (err, result) => {
             if (result == ''){
                 return res.send('error')
             }
@@ -65,24 +65,25 @@ exports.group = (req, res) => {
 }
 
 exports.groupCreate = (req, res) => {
-    db.query("SELECT UserName, Name, UserDetail.uid FROM `UserDetail`", (err, result) => {
+    // console.log('15156156')
+    db.query("SELECT Username, Name, UserDetail.uid FROM `UserDetail`", (err, result) => {
         const nonmember = result
-        db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.uid=UserInGroup.uid ORDER BY Groups.GroupID", (err, result) => {
+        db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username ORDER BY Groups.GroupID", (err, result) => {
             let group =[]
             let index = 0
             result.forEach((data) => {
                 if(group.length == 0){
-                    group.push({ GroupName:data.GroupName, member:[]})
-                    group[index].member.push({ uid:data.uid, UserName: data.UserName, Name: data.Name})
+                    group.push({ groupname:data.GroupName, member:[]})
+                    group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
                 }
                 else{
-                    if(group[index].GroupName == data.GroupName){
-                        group[index].member.push({ uid:data.uid, UserName: data.UserName, Name: data.Name})
+                    if(group[index].groupname == data.GroupName){
+                        group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
                     }
                     else{
-                        group.push({ GroupName:data.GroupName, member:[]})
+                        group.push({ groupname:data.groupname, member:[]})
                         index +=1
-                        group[index].member.push({ uid:data.uid, UserName: data.UserName, Name: data.Name})
+                        group[index].member.push({ uid:data.uid, userName: data.userName, name: data.name})
                     }
                 }
             })
@@ -103,26 +104,26 @@ exports.groupDetail = (req, res) => {
     //     })
     // })
     let data = []
-    db.query("SELECT UserName, Name, UserDetail.uid FROM `UserDetail`,`UserInGroup` WHERE UserInGroup.GroupID = '" + groupid + "' AND UserDetail.uid=UserInGroup.uid", (err, result) => {
+    db.query("SELECT UserName, Name, UserDetail.uid FROM `UserDetail`,`UserInGroup` WHERE UserInGroup.GroupID = '" + groupid + "' AND UserDetail.Username=UserInGroup.Username", (err, result) => {
         const member = result
-        db.query("SELECT UserName, Name, UserDetail.uid FROM `UserDetail` WHERE UserDetail.uid NOT IN (SELECT uid FROM UserInGroup WHERE GroupID='" + groupid + "')", (err, result) => {
+        db.query("SELECT UserName, Name, UserDetail.uid FROM `UserDetail` WHERE UserDetail.Username NOT IN (SELECT Username FROM UserInGroup WHERE GroupID='" + groupid + "')", (err, result) => {
             const nonmember = result
-            db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.uid=UserInGroup.uid AND Groups.GroupID!= '" + groupid + "' ORDER BY Groups.GroupID", (err, result) => {
+            db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username AND Groups.GroupID!= '" + groupid + "' ORDER BY Groups.GroupID", (err, result) => {
                 let group =[]
                 let index = 0
                 result.forEach((data) => {
                     if(group.length == 0){
-                        group.push({ GroupName:data.GroupName, member:[]})
-                        group[index].member.push({ uid:data.uid, UserName: data.UserName, Name: data.Name})
+                        group.push({ groupname:data.groupname, member:[]})
+                        group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
                     }
                     else{
-                        if(group[index].GroupName == data.GroupName){
-                            group[index].member.push({ uid:data.uid, UserName: data.UserName, Name: data.Name})
+                        if(group[index].groupname == data.GroupName){
+                            group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
                         }
                         else{
-                            group.push({ GroupName:data.GroupName, member:[]})
+                            group.push({ groupname:data.groupname, member:[]})
                             index +=1
-                            group[index].member.push({ uid:data.uid, UserName: data.UserName, Name: data.Name})
+                            group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
                         }
                     }
                 })
@@ -133,15 +134,15 @@ exports.groupDetail = (req, res) => {
 
 }
 
-exports.history = (req, res) => {
-    const { username } = req.session
-    db.query("SELECT uid FROM UserDetail WHERE Username = '" + username + "'", (err, result) => {
-        const uid = result[0]
-        db.query("SELECT * FROM Log WHERE uid = '" + uid + "'", (err, result) => {
-            res.json(result)
-        })
-    })
-}
+// exports.history = (req, res) => {
+//     const { username } = req.session
+//     db.query("SELECT uid FROM UserDetail WHERE Username = '" + username + "'", (err, result) => {
+//         const uid = result[0]
+//         db.query("SELECT * FROM Log WHERE uid = '" + uid + "'", (err, result) => {
+//             res.json(result)
+//         })
+//     })
+// }
 
 exports.findroom = (req, res) => {
     const { year,month,dateEnd } = req.body
@@ -158,20 +159,22 @@ exports.reservation = (req, res) => {
     db.query("SELECT RoomName FROM Room", (err, result) => {
         // const { RoomName } = result
         let RoomName = []
-        result.forEach((data) => {
-            RoomName.push(data.RoomName)
-        })
+        if(result.length > 0){
+            result.forEach((data) => {
+                RoomName.push(data.RoomName)
+            })
+        }
         const currentTime = new Date()
         const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
         db.query("SELECT * FROM RequestDetail WHERE timeEnd >= '" + currentTImeString + "'", (err, result) => {
-            res.json({ room: RoomName, reservation: result })
+            res.json({ room: RoomName, reservation: result, username: req.session.username })
         })
         // db.query("SELECT ")
     })
 }
 
 exports.responseReservePage = (req,res) => {
-    db.query("SELECT request.RequestID, request.uid, request.TypeReserve, request.Day, request.timeStart, request.timeEnd, request.Described, request.Status, UserDetail.Name, GroupRoom.RoomName FROM request, UserDetail, GroupRoom WHERE request.uid = UserDetail.uid AND request.RequestID = grouproom.RequestID", (err, result) => {
+    db.query("SELECT request.RequestID, request.uid, request.TypeReserve, request.Day, request.timeStart, request.timeEnd, request.Described, request.Status, UserDetail.Name, GroupRoom.RoomName FROM request, UserDetail, GroupRoom WHERE request.Username = UserDetail.Username AND request.RequestID = grouproom.RequestID", (err, result) => {
         res.json(result)
     })
 }
@@ -182,3 +185,9 @@ exports.roomcreate = (req, res) => {
     })
 }
 
+exports.profileDetail = (req, res) => {
+    db.query("SELECT * FROM UserDetail WHERE Username = '" + req.session.username + "' AND Disabled = 0", (err, result) => {
+        const { uid, Username, Department, Branch, Name, Email, Sec } = result[0]
+        res.json({ uid:uid, username:username, department:Department, branch:Branch, name:Name, email:Email, sec:Sec })
+    })
+}

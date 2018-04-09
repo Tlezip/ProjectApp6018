@@ -6,11 +6,11 @@ db.connect(function(err){
       });
     console.log("Connected");
     const sql = [
-        'CREATE TABLE UserDetail (uid VARCHAR(8) PRIMARY KEY,Username VARCHAR(10),Password VARCHAR(10),Department VARCHAR(20),Branch VARCHAR(20),Name VARCHAR(20),Email VARCHAR(30),Sec INT,Disabled INT,Admin INT)',
+        'CREATE TABLE UserDetail (uid VARCHAR(8),Username VARCHAR(16),Password VARCHAR(20),Department VARCHAR(20),Branch VARCHAR(20),Name VARCHAR(30),Email VARCHAR(30),Sec INT,Disabled INT,Admin INT, PRIMARY KEY(Username,Disabled))',
         'CREATE TABLE groups (GroupID INT AUTO_INCREMENT PRIMARY KEY, GroupName VARCHAR(10))',
-        'CREATE TABLE UserInGroup (GroupID INT NOT NULL,uid VARCHAR(8) NOT NULL,FOREIGN KEY (GroupID) REFERENCES groups(GroupID),FOREIGN KEY (uid) REFERENCES UserDetail(uid), primary key (GroupID, uid))',
-        'CREATE TABLE Request (RequestID INT AUTO_INCREMENT PRIMARY KEY,uid VARCHAR(8) NOT NULL,TypeReserve VARCHAR(10),Day VARCHAR(10),timeStart TIMESTAMP DEFAULT 0,timeEnd TIMESTAMP DEFAULT 0,Described TEXT,Status VARCHAR(15),FOREIGN KEY (uid) REFERENCES UserDetail(uid))',
-        'CREATE TABLE Member (RequestID INT,uid VARCHAR(8),FOREIGN KEY (RequestID) REFERENCES Request(RequestID),FOREIGN KEY (uid) REFERENCES UserDetail(uid),PRIMARY KEY (RequestID,uid))',
+        'CREATE TABLE UserInGroup (GroupID INT NOT NULL,Username VARCHAR(16), FOREIGN KEY (GroupID) REFERENCES groups(GroupID),FOREIGN KEY (Username) REFERENCES UserDetail(Username), primary key (GroupID, Username))',
+        'CREATE TABLE Request (RequestID INT AUTO_INCREMENT PRIMARY KEY,Username VARCHAR(16) NOT NULL,TypeReserve VARCHAR(10),Day VARCHAR(10),timeStart TIMESTAMP DEFAULT 0,timeEnd TIMESTAMP DEFAULT 0,Described TEXT,Status VARCHAR(15),FOREIGN KEY (Username) REFERENCES UserDetail(Username))',
+        'CREATE TABLE Member (RequestID INT,Username VARCHAR(16),FOREIGN KEY (RequestID) REFERENCES Request(RequestID),FOREIGN KEY (Username) REFERENCES UserDetail(Username),PRIMARY KEY (RequestID,Username))',
         'CREATE TABLE Room (RoomName VARCHAR(15) PRIMARY KEY)',
         'CREATE TABLE RequestDetail (RequestID INT,RoomName VARCHAR(15),timeStart TIMESTAMP DEFAULT 0,timeEnd TIMESTAMP DEFAULT 0, FOREIGN KEY (RequestID) REFERENCES Request(RequestID),FOREIGN KEY (RoomName) REFERENCES Room(RoomName), PRIMARY KEY (RequestID,timeStart,timeEnd))',
         'CREATE TABLE Log (LogID INT AUTO_INCREMENT PRIMARY KEY, uid VARCHAR(8), TIME TIMESTAMP DEFAULT 0, RoomName VARCHAR(15), Status VARCHAR(15) )',

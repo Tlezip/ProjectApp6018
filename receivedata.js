@@ -57,12 +57,31 @@ const receiveLog = () => {
 			arrayOfData = data.split(/,|\n|\r/)
 			const result = arrayOfData.filter(word => word.localeCompare(''))
 			const roomName = result[0]
+			// if(roomName == 'finish'){
+			// 	console.log('eieiieieieieiie')
+			// 	socket.end()
+			// 	server.close()
+			// 	return
+			// }
+			const a = result.length-1
+			console.log(result[a])
 			//console.log('length :', result.length)
 			//console.log(roomName)
+			console.log('roomName :', roomName)
+			// if(result[0] == 'finish'){
+			// 	console.log('qweeeeeee')
+			// 	return
+			// }
 			for (var i=1 ; i<result.length && i+3 <= result.length ; i+=3){
 				if(result[i] == ''){
 					console.log(i)
 				}
+				// if(roomName == 'finish'){
+				// 	console.log('break')
+				// 	break;
+				// }
+				console.log('len :',a)
+				console.log('last :',result[a])
 				const epochTime = result[i+1]
 				const date = new Date(0)
 				date.setUTCSeconds(epochTime)
@@ -71,27 +90,23 @@ const receiveLog = () => {
 				db.query(sql , (err, result) => {
 					if (err) throw err
 					console.log("inserted into LOG")
+					if(result[a] == "finish" && i == a-3){
+						console.log('fdewgdfgsdfdfg')
+						socket.end()
+						return
+					}
 				})
-				if(result[i+3] == "finish"){
-					console.log('fdewgdfgsdfdfg')
-					socket.end()
-				}
 			}
-			console.log(result)
-			socket.write('Server Received Log')
+			// if(roomName == 'finish'){
+			// 	socket.end()
+			// 	return
+			// }
+			// socket.write('Server Received Log')
 			//console.log(data)
-			console.log('******************* IN DB *************')
-			db.query("SELECT * FROM Log", (err, result) =>{
-				console.log(result)
-				console.log('\n********************* END ***************')
-			})
-		}, function() {
-			console.log('123456') 
-			socket.end()
-			server.close()
 		})
 		socket.on('end', () =>{
 			console.log('disconnect from server')
+			return
 		})
 	})
 	

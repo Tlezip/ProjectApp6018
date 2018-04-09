@@ -3,44 +3,53 @@ const db = require('../db')
 exports.reserve = (req, res) => {
     const { username } = req.session
     const { room } = req.body
-    db.query("SELECT uid FROM UserDetail WHERE Username = '" + username + "'", (err, result) => {
-        const { uid } = result[0]
-        let day
-        if( req.body.type != "repeat"){
-            day = ""
-        }
-        else{
-            day = req.body.day
-        }
-        db.query("SELECT RequestID FROM GroupRoom WHERE RoomName = '" + room + "'", (err, result) => {
-            const requestID = result
-            db.query("SELECT * FROM Request FROM Request WHERE RequestID IN (" + requestID + ") AND (timeStart >= '" + req.body.timeEnd + "' OR timeEnd  <= '" + req.body.timeStart + "')", (err, result) => {
-                if(result){
-                    console.log('111111')
-                    return res.send('error')
-                }
-            })
+    const { member } = req.body
+    // db.query("SELECT uid FROM UserDetail WHERE Username = '" + username + "'", (err, result) => {
+        // const { uid } = result[0]
+    let day
+    if( req.body.type != "Repeat"){
+        day = ""
+    }
+    else{
+        day = req.body.day
+    }
+    console.log(day)
+    db.query("SELECT RequestID FROM GroupRoom WHERE RoomName = '" + room + "'", (err, result) => {
+        const requestID = result
+        db.query("SELECT * FROM Request FROM Request WHERE RequestID IN (" + requestID + ") AND (timeStart >= '" + req.body.timeEnd + "' OR timeEnd  <= '" + req.body.timeStart + "')", (err, result) => {
+            if(result){
+                console.log('111111')
+                return res.send('error')
+            }
         })
-        db.query("INSERT INTO Request (uid, TypeReserve, Day, timeStart, timeEnd, Described, Status) VALUES ('" + uid + "','" + req.body.type + "','" + day + "','" + req.body.timeStart + "','" + req.body.timeEnd + "','" + req.body.describe + "','Pending')", (err, result) => {
+    })
+    db.query("INSERT INTO Request (Username, TypeReserve, Day, timeStart, timeEnd, Described, Status) VALUES ('" + username + "','" + req.body.type + "','" + day + "','" + req.body.timeStart + "','" + req.body.timeEnd + "','" + req.body.describe + "','Pending')", (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        console.log('result :', result.insertId)
+        const id = result.insertId
+        db.query("INSERT INTO Member (RequestID, Username) VALUES ('" + id + "','" + username + "')", (err, result) => {
             if(err){
                 console.log(err)
             }
-            console.log('result :', result.insertId)
-            const id = result.insertId
-            db.query("INSERT INTO Member (RequestID, uid) VALUES ('" + id + "','" + uid + "')", (err, result) => {
+            if(member.length > 0){
+                member.forEach((data) => {
+                    console.log(data)
+                    db.query("INSERT INTO Member (RequestID, Username) VALUES ('" + id + "','" + data.username + "')", (err, result) => {
+                    })
+                })
+            }
+            console.log('Reserve Complete')
+            db.query("INSERT INTO GroupRoom (RequestID, RoomName) VALUES ('" + id + "','" + req.body.room + "')", (err, result) => {
                 if(err){
                     console.log(err)
                 }
-                console.log('Reserve Complete')
-                db.query("INSERT INTO GroupRoom (RequestID, RoomName) VALUES ('" + id + "','" + req.body.room + "')", (err, result) => {
-                    if(err){
-                        console.log(err)
-                    }
-                    return res.json({ responseMessage: 'Reserve Complete'});
-                })
+                return res.json({ responseMessage: 'Reserve Complete'});
             })
         })
     })
+    // })
 }
 
 exports.cancelReserve = (req, res) => {
