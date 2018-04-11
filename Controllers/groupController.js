@@ -24,12 +24,12 @@ exports.create = (req, res) => {
             db.query("INSERT INTO Groups (GroupName) VALUES ('" + groupname + "')", (err, result) => {
                 const groupid = result.insertId
                 if(err){
-                    console.log(error)
+                    console.log(err)
                 }
                 if(member.length > 0){
                     member.forEach((member) => {
                         console.log('infore')
-                        db.query("INSERT INTO UserInGroup (GroupID, uid) VALUES ('" + groupid + "','" + member.username + "')", (err, result) => {
+                        db.query("INSERT INTO UserInGroup (GroupID, Username) VALUES ('" + groupid + "','" + member.username + "')", (err, result) => {
                             if(err){
                                 console.log(err)
                             }

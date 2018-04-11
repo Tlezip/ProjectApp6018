@@ -33,7 +33,7 @@ exports.reserve = (req, res) => {
             if(err){
                 console.log(err)
             }
-            if(member.length > 0){
+            if(member){
                 member.forEach((data) => {
                     console.log(data)
                     db.query("INSERT INTO Member (RequestID, Username) VALUES ('" + id + "','" + data.username + "')", (err, result) => {
@@ -54,7 +54,7 @@ exports.reserve = (req, res) => {
 
 exports.cancelReserve = (req, res) => {
     // console.log(req.params.id)
-    db.query("SELECT * FROM UserDetail,Request WHERE UserDetail.uid=Request.uid AND Request.RequestID= '" + req.params.id + "'", (err, result) => {
+    db.query("SELECT * FROM UserDetail,Request WHERE UserDetail.Username=Request.Username AND Request.RequestID= '" + req.params.id + "'", (err, result) => {
         if(result){
             console.log(result[0].Status)
             if(result[0].Status === 'Approved'){

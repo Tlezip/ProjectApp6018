@@ -30,6 +30,7 @@ exports.register = (req, res) => {
                     // handle error 
                     console.log('dfsdgksdfgk')
                     console.log(err);
+                    return res.json({ responseMessage: 'can\'t register '})
                     return;
                 }
                 console.log('dgfkdfl;ghkdfk')

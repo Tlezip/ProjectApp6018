@@ -3,6 +3,13 @@ const db = require('../db')
 
 exports.homepage = (req, res) => {
     // console.log('123')
+    // var net = require('net');
+
+    // var client = new net.Socket();
+    // client.connect(8100, '127.0.0.1', function() {
+    //     console.log('Connected');
+    //     client.write('SendReservation,ECC810');
+    // });
     const currentTime = new Date()
     const username = req.session.username
     // db.query("SELECT uid from UserDetail WHERE Username = '" + username + "'", (err, result) => {
@@ -48,9 +55,20 @@ exports.reserveDetail = (req, res) => {
                 let datajson = result[0]
                 datajson.timeStart = datajson.timeStart.toLocaleString()
                 datajson.timeEnd = datajson.timeEnd.toLocaleString()
-                db.query("SELECT * FROM Member WHERE RequestID = '" + requestID + "'", (err, result) => {
-                    datajson.member = result
+                db.query("SELECT RequestID, Username FROM Member WHERE RequestID = '" + requestID + "'", (err, result) => {
+                    datajson.member = []
+                    if(result.length > 0){
+                        result.forEach((data) => {
+                            datajson.member.push({ requestid: data.RequestID, username: data.Username})
+                        })
+                    } 
                     datajson.name = Name
+                    if(username == datajson.Username){
+                        datajson.isReserver = true
+                    }
+                    else{
+                        datajson.isReserver = false
+                    }
                     res.json(datajson)
                 })
             })
@@ -67,23 +85,26 @@ exports.group = (req, res) => {
 exports.groupCreate = (req, res) => {
     // console.log('15156156')
     db.query("SELECT Username, Name, UserDetail.uid FROM `UserDetail`", (err, result) => {
-        const nonmember = result
+        let nonmember = []
+        result.forEach((data) => {
+            nonmember.push({ username: data.Username, name: data.Name, uid: data.uid })
+        })
         db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username ORDER BY Groups.GroupID", (err, result) => {
             let group =[]
             let index = 0
             result.forEach((data) => {
                 if(group.length == 0){
                     group.push({ groupname:data.GroupName, member:[]})
-                    group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
+                    group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
                 }
                 else{
                     if(group[index].groupname == data.GroupName){
-                        group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
+                        group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
                     }
                     else{
-                        group.push({ groupname:data.groupname, member:[]})
+                        group.push({ groupname:data.GroupName, member:[]})
                         index +=1
-                        group[index].member.push({ uid:data.uid, userName: data.userName, name: data.name})
+                        group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
                     }
                 }
             })
@@ -113,17 +134,17 @@ exports.groupDetail = (req, res) => {
                 let index = 0
                 result.forEach((data) => {
                     if(group.length == 0){
-                        group.push({ groupname:data.groupname, member:[]})
-                        group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
+                        group.push({ groupname:data.GroupName, member:[]})
+                        group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
                     }
                     else{
                         if(group[index].groupname == data.GroupName){
-                            group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
+                            group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
                         }
                         else{
-                            group.push({ groupname:data.groupname, member:[]})
+                            group.push({ groupname:data.GroupName, member:[]})
                             index +=1
-                            group[index].member.push({ uid:data.uid, username: data.username, name: data.name})
+                            group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
                         }
                     }
                 })
@@ -174,20 +195,27 @@ exports.reservation = (req, res) => {
 }
 
 exports.responseReservePage = (req,res) => {
-    db.query("SELECT request.RequestID, request.uid, request.TypeReserve, request.Day, request.timeStart, request.timeEnd, request.Described, request.Status, UserDetail.Name, GroupRoom.RoomName FROM request, UserDetail, GroupRoom WHERE request.Username = UserDetail.Username AND request.RequestID = grouproom.RequestID", (err, result) => {
+    db.query("SELECT request.RequestID, request.Username, request.TypeReserve, request.Day, request.timeStart, request.timeEnd, request.Described, request.Status, UserDetail.Name, GroupRoom.RoomName FROM request, UserDetail, GroupRoom WHERE request.Username = UserDetail.Username AND request.RequestID = grouproom.RequestID", (err, result) => {
         res.json(result)
     })
 }
 
 exports.roomcreate = (req, res) => {
-    db.query("SELCT RoomName from Room", (err, result) => {
-        return res.json(result)
+    db.query("SELECT RoomName FROM Room", (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        let room = []
+        result.forEach((data) => {
+            room.push({ roomname: data.RoomName})
+        })
+        return res.json(room)
     })
 }
 
 exports.profileDetail = (req, res) => {
     db.query("SELECT * FROM UserDetail WHERE Username = '" + req.session.username + "' AND Disabled = 0", (err, result) => {
-        const { uid, Username, Department, Branch, Name, Email, Sec } = result[0]
+        const { uid, Username:username, Department, Branch, Name, Email, Sec } = result[0]
         res.json({ uid:uid, username:username, department:Department, branch:Branch, name:Name, email:Email, sec:Sec })
     })
 }

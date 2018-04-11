@@ -34,7 +34,7 @@ exports.postLogin = (req, res) => {
     // console.log(req)
     console.log(req.body)
     db.query("SELECT * from UserDetail WHERE Username = '" + req.body.username + "'", (err, result) => {
-        console.log(result)
+        // console.log(result)
         if (err){
             console.log(err)
         }
