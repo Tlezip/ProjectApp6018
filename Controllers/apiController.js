@@ -166,14 +166,20 @@ exports.groupDetail = (req, res) => {
 // }
 
 exports.findroom = (req, res) => {
-    const { year,month,dateEnd } = req.body
-    const timeStartString = year + "-" + month + "-1 00:00:00"
-    const timeEndString = year + "-" + month + "-" + dateEnd + " 23:59:59"
-    db.query("SELECT * FROM RequestDetail WHERE timeStart >= '" + timeStartString + "' AND timeStart <= '" + timeEndString + "'", (err, result) => {
-        res.json(result)
-    })
+    // const { year,month,dateEnd } = req.body
+    // const timeStartString = year + "-" + month + "-1 00:00:00"
+    // const timeEndString = year + "-" + month + "-" + dateEnd + " 23:59:59"
+    // db.query("SELECT * FROM RequestDetail WHERE timeStart >= '" + timeStartString + "' AND timeStart <= '" + timeEndString + "'", (err, result) => {
+        // res.json(result)
+    // })
     // const epochTime = (new Date(timeString).getTime()) / 1000
-
+    db.query("SELECT RequestDetail.RequestID, GroupRoom.RoomName, timeStart, timeEnd FROM RequestDetail, GroupRoom WHERE GroupRoom.RequestID=RequestDetail.RequestID", (err, result) => {
+        datajson = []
+        result.forEach((data) => {
+            datajson.push({ requestid: data.RequestID, roomname: data.RoomName, timestart: data.timeStart, timeend: data.timeEnd })
+        })
+        return res.json(datajson)
+    })
 }
 
 exports.reservation = (req, res) => {
