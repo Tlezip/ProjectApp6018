@@ -29,6 +29,7 @@ router.get('/api/group/:id', auth.isAdmin, apiController.groupDetail)
 router.get('/api/creategroup', apiController.groupCreate)
 router.get('/api/roomcreate', auth.isAdmin, apiController.roomcreate)
 router.get('/api/profile', auth.auth, apiController.profileDetail)
+router.get('/api/searchroom', auth.auth, apiController.findroom)
 
 router.post('/register', registerController.register)
 router.get('/auth', loginController.IsAuth)

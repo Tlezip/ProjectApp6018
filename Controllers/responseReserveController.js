@@ -34,8 +34,17 @@ exports.responseReserve = (req, res) => {
                             }
                             console.log('123')
                             timeStartepochint += 86400000
+                            timeStartepoch.setTime(timeStartepochint)
+                            timeStartepoch.setHours(0)
+                            timeStartepoch.setMinutes(0)
+                            timeStartepoch.setSeconds(0)
+                            timeStartepochint = timeStartepoch.getTime()
+                            timeEndepoch.setHours(0)
+                            timeEndepoch.setMinutes(0)
+                            timeEndepoch.setSeconds(0)
+                            timeEndepochint = timeEndepoch.getTime()
                             console.log(timeStartepochint, timeEndepochint)
-                            for( timeStartepochint; timeStartepochint + 86400000 < timeEndepochint ; timeStartepochint+=86400000){
+                            for( timeStartepochint; timeStartepochint + 86400000 <= timeEndepochint ; timeStartepochint+=86400000){
                                 console.log('inforloop')
                                 timeStartepoch.setTime(timeStartepochint)
                                 const timeStartDay = timeStartepoch.getFullYear() + "-" + (timeStartepoch.getMonth()+1) + "-" + timeStartepoch.getDate() + " 00:00:00"
@@ -55,6 +64,7 @@ exports.responseReserve = (req, res) => {
                                     return res.json({ responseMessage: 'Reserve Updated'})
                                 })
                             }
+                            // return res.json({ responseMessage: 'Reserve Updated'})
                         })
                     }
                     else if(timeStartepoch.getDate() === timeEndepoch.getDate()){
