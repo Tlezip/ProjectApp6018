@@ -51,6 +51,7 @@ exports.reserveDetail = (req, res) => {
                 return res.send('error')
             }
             db.query("SELECT * FROM Request WHERE RequestID = '" + requestID + "'", (err, result) => {
+                // console.log(result)
                 let Member = []
                 let datajson = result[0]
                 datajson.timeStart = datajson.timeStart.toLocaleString()
