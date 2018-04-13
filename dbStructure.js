@@ -6,7 +6,7 @@ db.connect(function(err){
       });
     console.log("Connected");
     const sql = [
-        'CREATE TABLE UserDetail (uid VARCHAR(8),Username VARCHAR(16),Password VARCHAR(20),Department VARCHAR(20),Branch VARCHAR(20),Name VARCHAR(30),Email VARCHAR(30),Sec INT,Disabled INT,Admin INT, PRIMARY KEY(Username,Disabled))',
+        'CREATE TABLE UserDetail (uid VARCHAR(8),Username VARCHAR(16),Password VARCHAR(20),Department VARCHAR(20),Branch VARCHAR(20),Name VARCHAR(30),Email VARCHAR(30),Sec INT,Disabled INT,Admin INT,token VARCHAR(30), PRIMARY KEY(Username,Disabled))',
         'CREATE TABLE groups (GroupID INT AUTO_INCREMENT PRIMARY KEY, GroupName VARCHAR(10))',
         'CREATE TABLE UserInGroup (GroupID INT NOT NULL,Username VARCHAR(16), FOREIGN KEY (GroupID) REFERENCES groups(GroupID),FOREIGN KEY (Username) REFERENCES UserDetail(Username), primary key (GroupID, Username))',
         'CREATE TABLE Request (RequestID INT AUTO_INCREMENT PRIMARY KEY,Username VARCHAR(16) NOT NULL,TypeReserve VARCHAR(10),Day VARCHAR(10),timeStart TIMESTAMP DEFAULT 0,timeEnd TIMESTAMP DEFAULT 0,Described TEXT,Status VARCHAR(15),FOREIGN KEY (Username) REFERENCES UserDetail(Username))',

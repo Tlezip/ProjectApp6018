@@ -44,6 +44,7 @@ router.post('/groupcreate', auth.isAdmin, groupController.create)
 router.post('/roomcreate', auth.isAdmin, roomController.create)
 router.post('/changepassword', auth.auth, passwordController.changePassword)
 router.post('/profile', auth.auth, profileController.updateprofile)
+router.post('/changeafterregis', registerController.changeafterregis)
 // exports.loginPage = () => {
 //     console.log('qwropekwdtgfopdk')
 //     app.get('/login', auth.no_auth, loginPage.getLoginPage)
