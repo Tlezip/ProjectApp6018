@@ -92,23 +92,25 @@ exports.groupCreate = (req, res) => {
         db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username ORDER BY Groups.GroupID", (err, result) => {
             let group =[]
             let index = 0
-            result.forEach((data) => {
-                if(group.length == 0){
-                    group.push({ groupname:data.GroupName, member:[]})
-                    group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
-                }
-                else{
-                    if(group[index].groupname == data.GroupName){
+            if(result){
+                result.forEach((data) => {
+                    if(group.length == 0){
+                        group.push({ groupname:data.GroupName, member:[]})
                         group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
                     }
                     else{
-                        group.push({ groupname:data.GroupName, member:[]})
-                        index +=1
-                        group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
+                        if(group[index].groupname == data.GroupName){
+                            group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
+                        }
+                        else{
+                            group.push({ groupname:data.GroupName, member:[]})
+                            index +=1
+                            group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
+                        }
                     }
-                }
-            })
-            return res.json({ nonmember:nonmember, group:group })
+                })
+                return res.json({ nonmember:nonmember, group:group })
+            }
         })
     })
     
