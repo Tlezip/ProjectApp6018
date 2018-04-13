@@ -203,7 +203,7 @@ exports.reservation = (req, res) => {
 exports.responseReservePage = (req,res) => {
     db.query("SELECT request.RequestID, request.Username, request.TypeReserve, request.Day, request.timeStart, request.timeEnd, request.Described, request.Status, UserDetail.Name, GroupRoom.RoomName FROM request, UserDetail, GroupRoom WHERE request.Username = UserDetail.Username AND request.RequestID = grouproom.RequestID", (err, result) => {
         datajson = []
-        if(result.length > 0){
+        if(result){
             result.forEach((data) => {
                 datajson.push({ requestid: data.RequestID, username: data.Username, typereserve: data.TypeReserve, day: data.Day, timestart: data.timeStart.toLocaleString(), timend: data.timeEnd.toLocaleString(), described: data.Described, status: data.Status, name: data.Name, roomname: data.RoomName})
             })
