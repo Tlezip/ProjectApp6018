@@ -57,8 +57,9 @@ exports.changeafterregis = (req, res) => {
     }
 
     db.query("SELECT * FROM UserDetail WHERE token = '" + token + "'", (err, result) => {
+        const username = result[0].Username
         if(result){
-            db.query("UPDATE UserDetail SET Password = '" + newpassword + "', token = NULL", (err, result) => {
+            db.query("UPDATE UserDetail SET Password = '" + newpassword + "', token = NULL WHERE Username = '" + username + "'", (err, result) => {
                 if(req.session){
                     req.session.destroy()
                 }
