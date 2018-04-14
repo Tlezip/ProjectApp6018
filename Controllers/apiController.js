@@ -205,6 +205,9 @@ exports.reservation = (req, res) => {
 
 exports.responseReservePage = (req,res) => {
     db.query("SELECT Request.RequestID, Request.Username, Request.TypeReserve, Request.Day, Request.timeStart, Request.timeEnd, Request.Described, Request.Status, UserDetail.Name, GroupRoom.RoomName FROM Request, UserDetail, GroupRoom WHERE Request.Username = UserDetail.Username AND Request.RequestID = GroupRoom.RequestID", (err, result) => {
+	if(err){
+	  console.log(err)
+	}
         datajson = []
         if(result){
             result.forEach((data) => {

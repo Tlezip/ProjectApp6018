@@ -73,6 +73,6 @@ app.use(express.static(__dirname + '/public'))
 // app.get(URL, getHomePage)
 // URL - คือ PATH ของเว็บไซต์
 // start server ด้วย port 5555
-var server = app.listen(5555, function() {
-    console.log('Express is running on port 5555.');
+var server = app.listen(8100, function() {
+    console.log('Express is running on port 8100.');
 });
