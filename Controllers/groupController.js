@@ -19,9 +19,9 @@ exports.editgroup = (req, res) => {
 
 exports.create = (req, res) => {
     const { groupname, member } = req.body
-    db.query("SELECT * FROM Groups WHERE GroupName = '" + groupname + "'", (err, result) => {
+    db.query("SELECT * FROM groups WHERE GroupName = '" + groupname + "'", (err, result) => {
         if(!result.length){
-            db.query("INSERT INTO Groups (GroupName) VALUES ('" + groupname + "')", (err, result) => {
+            db.query("INSERT INTO groups (GroupName) VALUES ('" + groupname + "')", (err, result) => {
                 const groupid = result.insertId
                 if(err){
                     console.log(err)

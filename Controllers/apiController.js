@@ -93,8 +93,7 @@ exports.groupCreate = (req, res) => {
         result.forEach((data) => {
             nonmember.push({ username: data.Username, name: data.Name, uid: data.uid })
         })
-        console.log('nonmember :', nonmember)
-        db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username ORDER BY Groups.GroupID", (err, result) => {
+        db.query("SELECT GroupName,UserDetail.uid,groups.GroupID,UserDetail.UserName,UserDetail.Name FROM groups,UserInGroup, UserDetail WHERE groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username ORDER BY groups.GroupID", (err, result) => {
             if(err){
                 console.log(err)
             }
@@ -139,7 +138,7 @@ exports.groupDetail = (req, res) => {
         const member = result
         db.query("SELECT UserName, Name, UserDetail.uid FROM `UserDetail` WHERE UserDetail.Username NOT IN (SELECT Username FROM UserInGroup WHERE GroupID='" + groupid + "')", (err, result) => {
             const nonmember = result
-            db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username AND Groups.GroupID!= '" + groupid + "' ORDER BY Groups.GroupID", (err, result) => {
+            db.query("SELECT GroupName,UserDetail.uid,groups.GroupID,UserDetail.UserName,UserDetail.Name FROM groups,UserInGroup, UserDetail WHERE groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username AND groups.GroupID!= '" + groupid + "' ORDER BY groups.GroupID", (err, result) => {
                 let group =[]
                 let index = 0
                 result.forEach((data) => {
