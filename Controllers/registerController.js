@@ -48,9 +48,8 @@ exports.register = (req, res) => {
 }
 
 exports.changeafterregis = (req, res) => {
-    const { token } = req.params
     console.log(req.body)
-    const { newpassword, repeatPassword } = req.body
+    const { newpassword, repeatPassword, token } = req.body
     // console.log(req.body)
     if(newpassword == repeatPassword){
         return res.json({ responseMessage: 'Wrong repeat password'})

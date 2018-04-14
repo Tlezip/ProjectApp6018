@@ -60,7 +60,7 @@ app.use(express.static(__dirname + '/public'))
 //         console.log(err);
 //         return;
 //       }
-//       console.log('dgfkdfl;ghkdfk')
+//       console.log('l;ghkdfk')
 //     });
 //     return res.json({});
 // });
