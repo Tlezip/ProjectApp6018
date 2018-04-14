@@ -5,8 +5,15 @@ var app = express();
 var mailer = require('express-mailer');
 var router = require('./route/route.js')
 var cookieParser = require('cookie-parser')
+var cors = require('cors')
 // var db = require('./db');
 // var testt = require('./Controller/loginController')
+
+app.use(cors({
+    origin: true,
+    credentials: true
+}))
+
 app.use(session({
     secret: 'keyboard cat',
     authenticated: false,
