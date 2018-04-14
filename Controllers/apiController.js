@@ -82,6 +82,7 @@ exports.group = (req, res) => {
         if(err){
             console.log(err)
         }
+        console.log('565656')
         res.json(result)
     })
 }
