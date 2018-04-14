@@ -86,11 +86,18 @@ exports.group = (req, res) => {
 exports.groupCreate = (req, res) => {
     // console.log('15156156')
     db.query("SELECT Username, Name, UserDetail.uid FROM `UserDetail`", (err, result) => {
+        if(err){
+            console.log(err)
+        }
         let nonmember = []
         result.forEach((data) => {
             nonmember.push({ username: data.Username, name: data.Name, uid: data.uid })
         })
+        console.log('nonmember :', nonmember)
         db.query("SELECT GroupName,UserDetail.uid,Groups.GroupID,UserDetail.UserName,UserDetail.Name FROM Groups,UserInGroup, UserDetail WHERE Groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username ORDER BY Groups.GroupID", (err, result) => {
+            if(err){
+                console.log(err)
+            }
             let group =[]
             let index = 0
             if(result){
