@@ -78,11 +78,10 @@ exports.reserveDetail = (req, res) => {
 }
 
 exports.group = (req, res) => {
-    db.query("SELECT groups.GroupName, groups.GroupID, count(*) count FROM `useringroup`, `groups` where useringroup.GroupID = groups.GroupID group by groups.GroupName", (err, result) => {
+    db.query("SELECT groups.GroupName, groups.GroupID, count(*) count FROM `UserInGroup`, `groups` where UserInGroup.GroupID = groups.GroupID group by groups.GroupName", (err, result) => {
         if(err){
             console.log(err)
         }
-        console.log('565656')
         res.json(result)
     })
 }
