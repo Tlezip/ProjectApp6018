@@ -15,8 +15,14 @@ exports.reserve = (req, res) => {
     }
     console.log(day)
     db.query("SELECT RequestID FROM GroupRoom WHERE RoomName = '" + room + "'", (err, result) => {
+        if(err){
+            console.log(err)
+        }
         const requestID = result
         db.query("SELECT * FROM Request FROM Request WHERE RequestID IN (" + requestID + ") AND (timeStart >= '" + req.body.timeEnd + "' OR timeEnd  <= '" + req.body.timeStart + "')", (err, result) => {
+            if(err){
+                console.log(err)
+            }
             if(result){
                 console.log('111111')
                 return res.send('error')
