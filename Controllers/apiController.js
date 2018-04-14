@@ -204,12 +204,11 @@ exports.reservation = (req, res) => {
 }
 
 exports.responseReservePage = (req,res) => {
-    console.log('inresponse api')
-    db.query("SELECT request.RequestID, request.Username, request.TypeReserve, request.Day, request.timeStart, request.timeEnd, request.Described, request.Status, UserDetail.Name, GroupRoom.RoomName FROM request, UserDetail, GroupRoom WHERE request.Username = UserDetail.Username AND request.RequestID = grouproom.RequestID", (err, result) => {
-        if(err){
-		console.log(err)
+    db.query("SELECT Request.RequestID, Request.Username, Request.TypeReserve, Request.Day, Request.timeStart, Request.timeEnd, Request.Described, Request.Status, UserDetail.Name, GroupRoom.RoomName FROM Request, UserDetail, GroupRoom WHERE Request.Username = UserDetail.Username AND Request.RequestID = GroupRoom.RequestID", (err, result) => {
+	if(err){
+	  console.log(err)
 	}
-	datajson = []
+        datajson = []
         if(result){
             result.forEach((data) => {
                 datajson.push({ requestid: data.RequestID, username: data.Username, typereserve: data.TypeReserve, day: data.Day, timestart: data.timeStart.toLocaleString(), timend: data.timeEnd.toLocaleString(), described: data.Described, status: data.Status, name: data.Name, roomname: data.RoomName})
