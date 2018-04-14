@@ -59,6 +59,9 @@ exports.changeafterregis = (req, res) => {
     db.query("SELECT * FROM UserDetail WHERE token = '" + token + "'", (err, result) => {
         if(result){
             db.query("UPDATE UserDetail SET Password = '" + newpassword + "', token = NULL", (err, result) => {
+                if(req.session){
+                    req.session.destroy()
+                }
                 return res.json({ responseMessage: 'changeregis Complete'})
             })
         }
