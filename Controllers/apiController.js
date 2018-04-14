@@ -138,10 +138,19 @@ exports.groupDetail = (req, res) => {
     // })
     let data = []
     db.query("SELECT UserName, Name, UserDetail.uid FROM `UserDetail`,`UserInGroup` WHERE UserInGroup.GroupID = '" + groupid + "' AND UserDetail.Username=UserInGroup.Username", (err, result) => {
+        if(err){
+            console.log(err)
+        }
         const member = result
         db.query("SELECT UserName, Name, UserDetail.uid FROM `UserDetail` WHERE UserDetail.Username NOT IN (SELECT Username FROM UserInGroup WHERE GroupID='" + groupid + "')", (err, result) => {
+            if(err){
+                console.log(err)
+            }
             const nonmember = result
             db.query("SELECT GroupName,UserDetail.uid,groups.GroupID,UserDetail.UserName,UserDetail.Name FROM groups,UserInGroup, UserDetail WHERE groups.GroupID=UserInGroup.GroupID AND UserDetail.Username=UserInGroup.Username AND groups.GroupID!= '" + groupid + "' ORDER BY groups.GroupID", (err, result) => {
+                if(err){
+                    console.log(err)
+                }
                 let group =[]
                 let index = 0
                 result.forEach((data) => {
