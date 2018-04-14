@@ -19,11 +19,9 @@ exports.responseReserve = (req, res) => {
                 }, function (err) {
                 if (err) {
                     // handle error 
-                    console.log('dfsdgksdfgk')
                     console.log(err);
                     return;
                 }
-                console.log('dgfkdfl;ghkdfk')
             });
             if (status == "Approved") {
                 db.query("SELECT * FROM Request WHERE RequestID = '" + id + "'", (err, result) => {
