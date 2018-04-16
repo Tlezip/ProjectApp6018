@@ -1,5 +1,12 @@
 const db = require('../db')
 const mailer = require('express-mailer');
+const net = require('net');
+
+    // var client = new net.Socket();
+    // client.connect(8100, '127.0.0.1', function() {
+    //     console.log('Connected');
+    //     client.write('SendReservation,ECC810');
+    // });
 //for Admin
 exports.responseReserve = (req, res) => {
     const { id, status } = req.body
@@ -79,6 +86,12 @@ exports.responseReserve = (req, res) => {
                                 if(timeStartepoch.getDate() == timeEndepoch.getDate()){
                                     const timeStartDay = timeStartepoch.getFullYear() + "-" + (timeStartepoch.getMonth()+1) + "-" + timeStartepoch.getDate() + " 00:00:00"
                                     db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartDay + "','" + timeEndString + "')", (err, result) => {
+                                        db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                                            if(err){
+                                                console.log(err)
+                                            }
+                                            connectServer(result[0])
+                                        })
                                         return res.json({ responseMessage: 'Reserve Updated'})
                                     })
                                 }
@@ -87,6 +100,12 @@ exports.responseReserve = (req, res) => {
                         }
                         else if(timeStartepoch.getDate() === timeEndepoch.getDate()){
                             db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartString + "','" + timeEndString + "')", (err, result) => {
+                                db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                                    if(err){
+                                        console.log(err)
+                                    }
+                                    connectServer(result[0])
+                                })
                                 return res.json({ responseMessage: 'Reserve Updated'})
                             })
                         }
@@ -95,6 +114,12 @@ exports.responseReserve = (req, res) => {
                             const timeStartOneDay = timeEndepoch.getFullYear() + "-" + (timeEndepoch.getMonth()+1) + "-" + timeEndepoch.getDate() + " 00:00:00"
                             db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartString + "','" + timeEndOneDay + "')", (err, result) => {
                                 db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartOneDay + "','" + timeEndString + "')", (err, result) => {
+                                    db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                                        if(err){
+                                            console.log(err)
+                                        }
+                                        connectServer(result[0])
+                                    })
                                     return res.json({ responseMessage: 'Reserve Updated'})
                                 })
                             })
@@ -141,6 +166,12 @@ exports.responseReserve = (req, res) => {
                                 })
                             }
                             if(timeStartepochint === timeEndepochint) {
+                                db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                                    if(err){
+                                        console.log(err)
+                                    }
+                                    connectServer(result[0])
+                                })
                                 return res.json({ responseMessage: 'Reserve Updated'})
                             }
                         }
@@ -148,8 +179,37 @@ exports.responseReserve = (req, res) => {
                 })
             }
             else if(status == "Rejected"){
+                db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                    if(err){
+                        console.log(err)
+                    }
+                    connectServer(result[0])
+                })
                 return res.json({ responseMessage: 'Reserve Updated'})
             }
         })
     })
+}
+
+const connectServer = (roomname) => {
+    var client = new net.Socket();
+    client.connect(8107, '127.0.0.1', function() {
+        console.log('Connected');
+        client.write('SendReservation,' + roomname);
+
+        client.on('data', function(data) {
+            data = data.toString()
+            if(data.localeCompare("Updated Reservation") == 0){
+                db.query("UPDATE Room SET isUpdate = 1 WHERE RoomName = '" + roomname + "'", (err, result) => {
+                    return
+                })
+            }
+            console.log('Updated: ' + roomname);
+            client.destroy(); // kill client after server's response
+        });
+
+        client.on('close', function() {
+            console.log('Connection closed');
+        });
+    });
 }

@@ -11,8 +11,8 @@ db.connect(function(err){
         'CREATE TABLE UserInGroup (GroupID INT NOT NULL,Username VARCHAR(16), FOREIGN KEY (GroupID) REFERENCES groups(GroupID),FOREIGN KEY (Username) REFERENCES UserDetail(Username), primary key (GroupID, Username))',
         'CREATE TABLE Request (RequestID INT AUTO_INCREMENT PRIMARY KEY,Username VARCHAR(16) NOT NULL,TypeReserve VARCHAR(10),Day VARCHAR(10),timeStart TIMESTAMP DEFAULT 0,timeEnd TIMESTAMP DEFAULT 0,Described TEXT,Status VARCHAR(15),FOREIGN KEY (Username) REFERENCES UserDetail(Username))',
         'CREATE TABLE Member (RequestID INT,Username VARCHAR(16),FOREIGN KEY (RequestID) REFERENCES Request(RequestID),FOREIGN KEY (Username) REFERENCES UserDetail(Username),PRIMARY KEY (RequestID,Username))',
-        'CREATE TABLE Room (RoomName VARCHAR(15) PRIMARY KEY)',
-        'CREATE TABLE RequestDetail (RequestID INT,RoomName VARCHAR(15),timeStart TIMESTAMP DEFAULT 0,timeEnd TIMESTAMP DEFAULT 0, FOREIGN KEY (RequestID) REFERENCES Request(RequestID),FOREIGN KEY (RoomName) REFERENCES Room(RoomName), PRIMARY KEY (RequestID,timeStart,timeEnd))',
+        'CREATE TABLE Room (RoomName VARCHAR(15) PRIMARY KEY, isUpdate INT)',
+        'CREATE TABLE RequestDetail (RequestID INT,timeStart TIMESTAMP DEFAULT 0,timeEnd TIMESTAMP DEFAULT 0, FOREIGN KEY (RequestID) REFERENCES Request(RequestID), PRIMARY KEY (RequestID,timeStart,timeEnd))',
         'CREATE TABLE Log (LogID INT AUTO_INCREMENT PRIMARY KEY, Username VARCHAR(16), TIME TIMESTAMP DEFAULT 0, RoomName VARCHAR(15), Status VARCHAR(15) )',
         'CREATE TABLE GroupRoom (RequestID INT, RoomName VARCHAR(15), FOREIGN KEY (RequestID) REFERENCES Request(RequestID), FOREIGN KEY (RoomName) REFERENCES Room(RoomName), PRIMARY KEY(RequestID,RoomName))'
     ]

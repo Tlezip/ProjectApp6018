@@ -95,3 +95,15 @@ exports.cancelReserve = (req, res) => {
     // })
     
 }
+
+const checkrepeatedly = (room, type, timeStart, timeEnd) => {
+    let repeatedid = []
+    db.query("SELECT * FROM Request WHERE RequestID IN (SELECT RequestID FROM GroupRoom WHERE RoomName = '" + room + "') AND (timeEnd >= '" + timeStart + "' OR timeStart <= '" + timeEnd + "')", (err, result) => {
+        if(result){
+
+        }
+        else{
+            return 1
+        }
+    })
+}
