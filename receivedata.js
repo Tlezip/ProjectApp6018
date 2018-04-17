@@ -10,7 +10,7 @@ const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMont
 // console.log(currentTImeString)
 const sendReservation = (roomName, callback) => {
 	let reservation = roomName + '\n'
-	db.query("SELECT * from RequestDetail WHERE roomname = '" + roomName + "' AND timeStart <= '" + currentTImeString +"'", (err, result) => {
+	db.query("SELECT * from RequestDetail WHERE RoomName = '" + roomName + "' AND timeStart <= '" + currentTImeString +"'", (err, result) => {
 		if (err) throw err
 		// let reservation = roomName + '\n'
 		console.log(result)
