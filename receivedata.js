@@ -41,7 +41,7 @@ const sendReservation = (roomName, callback) => {
 
 const receiveLog = () => {
 	var server = net.createServer(function(socket) {
-		// socket.write("TEST ECC810")
+		socket.write("TEST ECC810")
 		socket.on('data', function(data){
 			data = data.toString()
 			// if( data.localeCompare("Node Received Reservation") == 0){
@@ -97,7 +97,7 @@ const receiveLog = () => {
 		})
 	})
 	
-	server.listen(8100, function(){
+	server.listen(8107, function(){
 		console.log('Now listening')
 	})
 }
@@ -110,6 +110,10 @@ var server = net.createServer(function(socket) {
 		arrayOfData = data.split(/,|\n|\r/)
 		let result = arrayOfData.filter(word => word.localeCompare(''))
 		if( result[0] == 'SendReservation'){
+			sendReservation(result[1], (val) => {
+				console.log('val :',val)
+				socket.write(val)
+			})
 			console.log('55555555555555555555')
 			console.log(result[1])
 			result.splice(0,1)
@@ -147,13 +151,13 @@ var server = net.createServer(function(socket) {
 		// 	})
 		// }
 	})
-	socket.on('end', () =>{
-		console.log('disconnect from server')
-		return
-	})
+	// socket.on('end', () =>{
+	// 	console.log('disconnect from server')
+	// 	return
+	// })
 })
 
-server.listen(8100, function(){
+server.listen(8107, function(){
 	console.log('Now listening')
 })
 
