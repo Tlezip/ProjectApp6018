@@ -6,11 +6,11 @@ const utf8 = require('utf8')
 
 const db = require('./db')
 const currentTime = new Date()
-const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
+const currentTimeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
 // console.log(currentTImeString)
 const sendReservation = (roomName, callback) => {
 	let reservation = roomName + '\n'
-	db.query("SELECT * from RequestDetail WHERE RoomName = '" + roomName + "' AND timeStart <= '" + currentTImeString +"'", (err, result) => {
+	db.query("SELECT * from RequestDetail,GroupRoom WHERE RequestDetail.RequestID = GroupRoom.RequestID AND GroupRoom.RoomName = '"+ roomName + "'", (err, result) => {
 		if (err) throw err
 		// let reservation = roomName + '\n'
 		console.log(result)
