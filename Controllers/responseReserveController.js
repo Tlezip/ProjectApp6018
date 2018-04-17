@@ -90,7 +90,7 @@ exports.responseReserve = (req, res) => {
                                             if(err){
                                                 console.log(err)
                                             }
-                                            connectServer(result[0])
+                                            connectServer(result[0].RoomName)
                                         })
                                         return res.json({ responseMessage: 'Reserve Updated'})
                                     })
@@ -104,7 +104,7 @@ exports.responseReserve = (req, res) => {
                                     if(err){
                                         console.log(err)
                                     }
-                                    connectServer(result[0])
+                                    connectServer(result[0].RoomName)
                                 })
                                 return res.json({ responseMessage: 'Reserve Updated'})
                             })
@@ -118,7 +118,7 @@ exports.responseReserve = (req, res) => {
                                         if(err){
                                             console.log(err)
                                         }
-                                        connectServer(result[0])
+                                        connectServer(result[0].RoomName)
                                     })
                                     return res.json({ responseMessage: 'Reserve Updated'})
                                 })
@@ -170,7 +170,7 @@ exports.responseReserve = (req, res) => {
                                     if(err){
                                         console.log(err)
                                     }
-                                    connectServer(result[0])
+                                    connectServer(result[0].RoomName)
                                 })
                                 return res.json({ responseMessage: 'Reserve Updated'})
                             }
@@ -183,7 +183,7 @@ exports.responseReserve = (req, res) => {
                     if(err){
                         console.log(err)
                     }
-                    connectServer(result[0])
+                    connectServer(result[0].RoomName)
                 })
                 return res.json({ responseMessage: 'Reserve Updated'})
             }

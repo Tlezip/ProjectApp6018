@@ -79,8 +79,8 @@ const receiveLog = () => {
 					console.log("inserted into LOG")
 					if(result[a] == "finish" && i == a-3){
 						console.log('fdewgdfgsdfdfg')
-						socket.end()
-						return
+						// socket.end()
+						// return
 					}
 				})
 			}
@@ -97,69 +97,70 @@ const receiveLog = () => {
 		})
 	})
 	
-	server.listen(8107, function(){
+	server.listen(8100, function(){
 		console.log('Now listening')
 	})
 }
 
+receiveLog()
 
-var server = net.createServer(function(socket) {
-	// socket.write("TEST ECC810")
-	socket.on('data', function(data){
-		data = data.toString()
-		arrayOfData = data.split(/,|\n|\r/)
-		let result = arrayOfData.filter(word => word.localeCompare(''))
-		if( result[0] == 'SendReservation'){
-			sendReservation(result[1], (val) => {
-				console.log('val :',val)
-				socket.write(val)
-			})
-			console.log('55555555555555555555')
-			console.log(result[1])
-			result.splice(0,1)
-			console.log(result[0],' : ',result[1])
-		}
-		else if( result [0] == 'LOG'){
+// var server = net.createServer(function(socket) {
+// 	// socket.write("TEST ECC810")
+// 	socket.on('data', function(data){
+// 		data = data.toString()
+// 		arrayOfData = data.split(/,|\n|\r/)
+// 		let result = arrayOfData.filter(word => word.localeCompare(''))
+// 		if( result[0] == 'SendReservation'){
+// 			sendReservation(result[1], (val) => {
+// 				console.log('val :',val)
+// 				socket.write(val)
+// 			})
+// 			console.log('55555555555555555555')
+// 			console.log(result[1])
+// 			result.splice(0,1)
+// 			console.log(result[0],' : ',result[1])
+// 		}
+// 		else if( result [0] == 'LOG'){
 
-		}
-		else { //ReceiveLog
+// 		}
+// 		else { //ReceiveLog
 			
-		}
-		// const roomName = result[0]
-		// const a = result.length-1
-		// console.log(result[a])
-		// console.log('roomName :', roomName)
-		// for (var i=1 ; i<result.length && i+3 <= result.length ; i+=3){
-		// 	if(result[i] == ''){
-		// 		console.log(i)
-		// 	}
-		// 	console.log('len :',a)
-		// 	console.log('last :',result[a])
-		// 	const epochTime = result[i+1]
-		// 	const date = new Date(0)
-		// 	date.setUTCSeconds(epochTime)
-		// 	const dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
-		// 	var sql = "INSERT INTO Log (uid, RoomName, Time, Status) VALUES ('" + result[i] + "','" + result[0] + "','" + dateString + "','" + result[i+2] + "')"
-		// 	db.query(sql , (err, result) => {
-		// 		if (err) throw err
-		// 		console.log("inserted into LOG")
-		// 		if(result[a] == "finish" && i == a-3){
-		// 			console.log('fdewgdfgsdfdfg')
-		// 			socket.end()
-		// 			return
-		// 		}
-		// 	})
-		// }
-	})
-	// socket.on('end', () =>{
-	// 	console.log('disconnect from server')
-	// 	return
-	// })
-})
+// 		}
+// 		// const roomName = result[0]
+// 		// const a = result.length-1
+// 		// console.log(result[a])
+// 		// console.log('roomName :', roomName)
+// 		// for (var i=1 ; i<result.length && i+3 <= result.length ; i+=3){
+// 		// 	if(result[i] == ''){
+// 		// 		console.log(i)
+// 		// 	}
+// 		// 	console.log('len :',a)
+// 		// 	console.log('last :',result[a])
+// 		// 	const epochTime = result[i+1]
+// 		// 	const date = new Date(0)
+// 		// 	date.setUTCSeconds(epochTime)
+// 		// 	const dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+// 		// 	var sql = "INSERT INTO Log (uid, RoomName, Time, Status) VALUES ('" + result[i] + "','" + result[0] + "','" + dateString + "','" + result[i+2] + "')"
+// 		// 	db.query(sql , (err, result) => {
+// 		// 		if (err) throw err
+// 		// 		console.log("inserted into LOG")
+// 		// 		if(result[a] == "finish" && i == a-3){
+// 		// 			console.log('fdewgdfgsdfdfg')
+// 		// 			socket.end()
+// 		// 			return
+// 		// 		}
+// 		// 	})
+// 		// }
+// 	})
+// 	// socket.on('end', () =>{
+// 	// 	console.log('disconnect from server')
+// 	// 	return
+// 	// })
+// })
 
-server.listen(8107, function(){
-	console.log('Now listening')
-})
+// server.listen(8107, function(){
+// 	console.log('Now listening')
+// })
 
 
 // sendReservation("ECC810", (val) => {
