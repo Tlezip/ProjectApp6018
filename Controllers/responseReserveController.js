@@ -193,7 +193,7 @@ exports.responseReserve = (req, res) => {
 
 const connectServer = (roomname) => {
     var client = new net.Socket();
-    client.connect(8107, '127.0.0.1', function() {
+    client.connect(8100, '127.0.0.1', function() {
         console.log('Connected');
         client.write('SendReservation,' + roomname);
 
