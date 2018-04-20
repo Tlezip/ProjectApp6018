@@ -13,10 +13,14 @@ const sendReservation = (roomName, callback) => {
 	db.query("SELECT * from RequestDetail,GroupRoom WHERE RequestDetail.RequestID = GroupRoom.RequestID AND GroupRoom.RoomName = '"+ roomName + "'", (err, result) => {
 		if (err) throw err
 		// let reservation = roomName + '\n'
-		console.log(result)
+		// console.log(result)
 		// console.log(result.length)
 		result.forEach(({ uid, timeStart, timeEnd }) => {
-			reservation += (uid + "," + timeStart.getTime() + "," + timeEnd.getTime() + "\n")
+			let keepuid = uid
+			if(uid == undefined){
+				keepuid = ''
+			}
+			reservation += ('' + "," + timeStart.getTime() + "," + timeEnd.getTime() + "\n")
 			// console.log('test',reservation)
 			
 			// console.log(RoomName, timeStart.getTime())
@@ -103,18 +107,21 @@ const receiveLog = () => {
 }
 
 // receiveLog()
-
+let a = ''
 var server = net.createServer(function(socket) {
-	// socket.write("TEST ECC810")
+  
 	socket.on('data', function(data){
 		data = data.toString()
+		console.log(data)
 		arrayOfData = data.split(/,|\n|\r/)
 		let result = arrayOfData.filter(word => word.localeCompare(''))
 		if( result[0] == 'SendReservation'){
+			a = result[1]
 			sendReservation(result[1], (val) => {
-				console.log('val :',val)
+				// console.log('val :',val)
 				socket.write(val)
 			})
+			// broadcast('1234')
 			console.log('55555555555555555555')
 			console.log(result[1])
 			result.splice(0,1)
@@ -123,9 +130,73 @@ var server = net.createServer(function(socket) {
 		else if( result [0] == 'LOG'){
 
 		}
-		else { //ReceiveLog
-			
+		else if( result[0] == 'checkreservation' ){ //ReceiveLog
+			const room = result[1]
+			db.query("SELECT isUpdate FROM Request WHERE Request.isUpdate = 0 AND Request.RequestID IN (SELECT RequestID FROM GroupRoom WHERE GroupRoom.RoomName = '" + room + "')", (err, result) => {
+				if(err){
+					console.log(err)
+				}
+				if(result){
+					const currentTS = new Date().toLocaleString()
+					console.log(currentTS)
+					db.query(`SELECT Request.RequestID,UserDetail.uid,UserDetail.Username,RequestDetail.timeStart,RequestDetail.timeEnd,Request.isUpdate 
+					FROM GroupRoom, Request, RequestDetail, Member, UserDetail 
+					WHERE Request.RequestID=RequestDetail.RequestID AND Request.RequestID=GroupRoom.RequestID AND 
+					Request.RequestID IN (SELECT RequestID FROM GroupRoom WHERE RoomName = '${room}') AND Member.RequestID 
+					IN (Request.RequestID) AND Request.Status = 'Approved' AND Request.timeEnd > '${currentTS}' 
+					AND RequestDetail.timeEnd > '${currentTS}' AND Request.isUpdate = 0 AND Member.UserName = UserDetail.Username`, (err, result) => {
+						if(err){
+							console.log(err)
+						}
+						if(result){
+							let reservation = ''
+							let requestid = []
+							console.log('lentgth :',result.length)
+							result.forEach(({ RequestID,uid, Username, timeStart, timeEnd, isUpdate }, index) => {
+								// console.log('issss : ', isUpdate)
+								let keepuid = uid
+								if(!requestid.includes(RequestID)){
+									requestid.push(RequestID)
+								}
+								if(uid == undefined){
+									keepuid = ''
+								}
+								reservation += (keepuid + "," + Username + "," + timeStart.getTime() + "," + timeEnd.getTime() + "\n")
+								// console.log(index)
+								if(index == result.length-1 ){
+									socket.write(reservation)
+									socket.on('data', function(data){
+										data = data.toString()
+										if(data == ("end," + room)){
+											console.log('endddd')
+											db.query("UPDATE Request SET isUpdate = 1 WHERE Request.RequestID IN (" + requestid + ")", (err, result) => {
+												if(err){
+													console.log(err)
+												}
+												return
+											})
+										}
+									})
+									return
+									console.log("write done")
+									// console.log(reservation)
+									// console.log('requestid :',requestid)
+									
+									
+								}
+								// console.log('test',reservation)
+								
+								// console.log(RoomName, timeStart.getTime())
+							})
+						}
+					})
+				}
+			})
 		}
+		else{
+			return
+		}
+
 		// const roomName = result[0]
 		// const a = result.length-1
 		// console.log(result[a])
@@ -152,14 +223,23 @@ var server = net.createServer(function(socket) {
 		// 	})
 		// }
 	})
+
+
+	console.log(a)
+	if( a != ''){
+		console.log('gkofdg;lkdf;gk')
+		socket.write('dgfdgdg')
+	}
 	// socket.on('end', () =>{
 	// 	console.log('disconnect from server')
 	// 	return
 	// })
 })
 
-server.listen(8100, function(){
-	console.log('Now listening')
+console.log('a :', a)
+
+server.listen(8107, function(){
+	console.log('Now listening on 8107')
 })
 
 

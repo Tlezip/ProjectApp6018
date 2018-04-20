@@ -86,12 +86,12 @@ exports.responseReserve = (req, res) => {
                                 if(timeStartepoch.getDate() == timeEndepoch.getDate()){
                                     const timeStartDay = timeStartepoch.getFullYear() + "-" + (timeStartepoch.getMonth()+1) + "-" + timeStartepoch.getDate() + " 00:00:00"
                                     db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartDay + "','" + timeEndString + "')", (err, result) => {
-                                        db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
-                                            if(err){
-                                                console.log(err)
-                                            }
-                                            connectServer(result[0].RoomName)
-                                        })
+                                        // db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                                        //     if(err){
+                                        //         console.log(err)
+                                        //     }
+                                        //     connectServer(result[0].RoomName)
+                                        // })
                                         return res.json({ responseMessage: 'Reserve Updated'})
                                     })
                                 }
@@ -100,12 +100,12 @@ exports.responseReserve = (req, res) => {
                         }
                         else if(timeStartepoch.getDate() === timeEndepoch.getDate()){
                             db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartString + "','" + timeEndString + "')", (err, result) => {
-                                db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
-                                    if(err){
-                                        console.log(err)
-                                    }
-                                    connectServer(result[0].RoomName)
-                                })
+                                // db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                                //     if(err){
+                                //         console.log(err)
+                                //     }
+                                //     connectServer(result[0].RoomName)
+                                // })
                                 return res.json({ responseMessage: 'Reserve Updated'})
                             })
                         }
@@ -114,12 +114,12 @@ exports.responseReserve = (req, res) => {
                             const timeStartOneDay = timeEndepoch.getFullYear() + "-" + (timeEndepoch.getMonth()+1) + "-" + timeEndepoch.getDate() + " 00:00:00"
                             db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartString + "','" + timeEndOneDay + "')", (err, result) => {
                                 db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + timeStartOneDay + "','" + timeEndString + "')", (err, result) => {
-                                    db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
-                                        if(err){
-                                            console.log(err)
-                                        }
-                                        connectServer(result[0].RoomName)
-                                    })
+                                    // db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                                    //     if(err){
+                                    //         console.log(err)
+                                    //     }
+                                    //     connectServer(result[0].RoomName)
+                                    // })
                                     return res.json({ responseMessage: 'Reserve Updated'})
                                 })
                             })
@@ -166,12 +166,12 @@ exports.responseReserve = (req, res) => {
                                 })
                             }
                             if(timeStartepochint === timeEndepochint) {
-                                db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
-                                    if(err){
-                                        console.log(err)
-                                    }
-                                    connectServer(result[0].RoomName)
-                                })
+                                // db.query("SELECT RoomName FROM GroupRoom WHERE RequestID = '" + id + "'", (err, result) => {
+                                //     if(err){
+                                //         console.log(err)
+                                //     }
+                                //     connectServer(result[0].RoomName)
+                                // })
                                 return res.json({ responseMessage: 'Reserve Updated'})
                             }
                         }

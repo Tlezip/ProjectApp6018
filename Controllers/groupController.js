@@ -4,11 +4,15 @@ exports.editgroup = (req, res) => {
     const { add, remove } = req.body
     const groupid = req.params.id
     add.forEach((data) => {
-        db.query("INSERT INTO UserInGroup (GroupID, uid) VALUES ('" + groupid + "','" + data.Username + "')", (err, result) => {
+        console.log(data)
+        db.query("INSERT INTO UserInGroup (GroupID, Username) VALUES ('" + groupid + "','" + data.username + "')", (err, result) => {
+            if(err){
+                console.log(err)
+            }
         })
     })
     remove.forEach((data) => {
-        db.query("DELETE FROM UserInGroup WHERE GroupID ='" + groupid + "' AND Username = '" + data.Username + "'", (err, result) => {
+        db.query("DELETE FROM UserInGroup WHERE GroupID ='" + groupid + "' AND Username = '" + data.username + "'", (err, result) => {
             if(err){
                 console.log(err)
             }

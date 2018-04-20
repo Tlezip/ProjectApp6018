@@ -19,17 +19,17 @@ exports.reserve = (req, res) => {
     //         console.log(err)
     //     }
     //     const requestID = result
-    db.query("SELECT * FROM Request FROM Request WHERE RequestID IN (SELECT RequestID FROM GroupRoom WHERE RoomName = '" + room + "') AND (timeStart >= '" + req.body.timeEnd + "' OR timeEnd  <= '" + req.body.timeStart + "')", (err, result) => {
-        if(err){
-            console.log(err)
-        }
-        if(result){
-            console.log('111111')
-            return res.send('error')
-        }
-    })
+    // db.query("SELECT * FROM Request FROM Request WHERE RequestID IN (SELECT RequestID FROM GroupRoom WHERE RoomName = '" + room + "') AND (timeStart >= '" + req.body.timeEnd + "' OR timeEnd  <= '" + req.body.timeStart + "')", (err, result) => {
+    //     if(err){
+    //         console.log(err)
+    //     }
+    //     if(result){
+    //         console.log('111111')
+    //         return res.send('error')
+    //     }
     // })
-    db.query("INSERT INTO Request (Username, TypeReserve, Day, timeStart, timeEnd, Described, Status) VALUES ('" + username + "','" + req.body.type + "','" + day + "','" + req.body.timeStart + "','" + req.body.timeEnd + "','" + req.body.describe + "','Pending')", (err, result) => {
+    // })
+    db.query("INSERT INTO Request (Username, TypeReserve, Day, timeStart, timeEnd, Described, Status, isUpdate) VALUES ('" + username + "','" + req.body.type + "','" + day + "','" + req.body.timeStart + "','" + req.body.timeEnd + "','" + req.body.describe + "','Pending','0')", (err, result) => {
         if(err){
             console.log(err)
         }
@@ -65,7 +65,9 @@ exports.cancelReserve = (req, res) => {
             console.log(result[0].Status)
             if(result[0].Status === 'Approved'){
                 db.query("DELETE FROM RequestDetail WHERE RequestID = '" + req.params.id + "'", (err, result) => {
-                    return res.json({ responseMessage: 'cancel Complete'})
+                    db.query("UPDATE Request SET Status = 'canceled' WHERE RequestID = '" + req.params.id + "'", (err, result) => {
+                        return res.json({ responseMessage: 'cancel Complete'})
+                    })
                 })
             }
             else{
