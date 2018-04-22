@@ -23,13 +23,14 @@ exports.homepage = (req, res) => {
             requestID.push(data.RequestID)
         })
         // console.log(requestID)
-        const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
-        db.query("SELECT * FROM Request WHERE RequestID IN (" + requestID + ") AND timeEnd >= '" + currentTImeString + "'" , (err, result) => {
+        const currentTimeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
+        db.query("SELECT * FROM Request,GroupRoom WHERE Request.RequestID IN (" + requestID + ") AND Request.RequestID=GroupRoom.RequestID AND timeEnd >= '" + currentTimeString + "'" , (err, result) => {
             // console.log(result)
             if(result){
                 result.forEach((data) => {
                     data.timeStart = data.timeStart.toLocaleString()
                     data.timeEnd = data.timeEnd.toLocaleString()
+                    data.roomname = data.RoomName
                 })
             }
             return res.json(result)
@@ -194,7 +195,7 @@ exports.findroom = (req, res) => {
         // res.json(result)
     // })
     // const epochTime = (new Date(timeString).getTime()) / 1000
-    db.query("SELECT RequestDetail.RequestID, GroupRoom.RoomName, timeStart, timeEnd FROM RequestDetail, GroupRoom WHERE GroupRoom.RequestID=RequestDetail.RequestID", (err, result) => {
+    db.query("SELECT RequestDetail.RequestID, GroupRoom.RoomName, RequestDetail.timeStart, RequestDetail.timeEnd FROM RequestDetail, GroupRoom, Request WHERE GroupRoom.RequestID=RequestDetail.RequestID AND RequestDetail.RequestID=Request.RequestID AND Request.Status='Approved'", (err, result) => {
         datajson = []
         result.forEach((data) => {
             datajson.push({ requestid: data.RequestID, roomname: data.RoomName, timestart: data.timeStart.toLocaleString(), timeend: data.timeEnd.toLocaleString() })
@@ -214,7 +215,7 @@ exports.reservation = (req, res) => {
         }
         const currentTime = new Date()
         const currentTImeString = currentTime.getFullYear() + '-' + (currentTime.getMonth() + 1) + '-' + currentTime.getDate() + ' ' + currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
-        db.query("SELECT * FROM RequestDetail WHERE timeEnd >= '" + currentTImeString + "'", (err, result) => {
+        db.query("SELECT RequestDetail.RequestID,RequestDetail.timeStart, RequestDetail.timeEnd, GroupRoom.RoomName FROM RequestDetail, Request, GroupRoom WHERE RequestDetail.timeEnd >= '" + currentTImeString + "' AND RequestDetail.RequestID=Request.RequestID AND Request.Status='Approved' AND GroupRoom.RequestID=RequestDetail.RequestID", (err, result) => {
             res.json({ room: RoomName, reservation: result, username: req.session.username })
         })
         // db.query("SELECT ")
