@@ -107,19 +107,21 @@ exports.groupCreate = (req, res) => {
                 result.forEach((data) => {
                     if(group.length == 0){
                         group.push({ groupname:data.GroupName, member:[]})
-                        group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
+                        group[index].member.push({ uid:data.uid, username: data.UserName, name: data.Name})
                     }
                     else{
                         if(group[index].groupname == data.GroupName){
-                            group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
+                            group[index].member.push({ uid:data.uid, username: data.UserName, name: data.Name})
                         }
                         else{
                             group.push({ groupname:data.GroupName, member:[]})
                             index +=1
-                            group[index].member.push({ uid:data.uid, username: data.Username, name: data.Name})
+                            group[index].member.push({ uid:data.uid, username: data.UserName, name: data.Name})
                         }
                     }
                 })
+                // console.log(group)
+                // console.log(group[0].member)
                 return res.json({ nonmember:nonmember, group:group })
             }
         })
