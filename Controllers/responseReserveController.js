@@ -17,7 +17,7 @@ exports.responseReserve = (req, res) => {
             const room = result[0].RoomName
             const timeStartString = result[0].timeStart.toLocaleString()
             const timeEndString = result[0].timeEnd.toLocaleString()
-            db.query("SELECT Request.RequestID FROM RequestDetail,Request WHERE Request.RequestID != '" + id + "' AND RequestDetail.RequestID=Request.RequestID AND RequestDetail.RequestID IN (SELECT RequestID FROM GroupRoom WHERE RoomName = '" + room + "') AND (NOT (RequestDetail.timeEnd <= '" + timeStartString + "' OR RequestDetail.timeStart >= '" + timeEndString + "')) AND Request.RequestID=RequestDetail.RequestID AND Request.Status != 'Approved'", (err, result) => {
+            db.query("SELECT Request.RequestID FROM RequestDetail,Request WHERE Request.RequestID != '" + id + "' AND RequestDetail.RequestID=Request.RequestID AND RequestDetail.RequestID IN (SELECT RequestID FROM GroupRoom WHERE RoomName = '" + room + "') AND (NOT (RequestDetail.timeEnd <= '" + timeStartString + "' OR RequestDetail.timeStart >= '" + timeEndString + "')) AND Request.RequestID=RequestDetail.RequestID AND Request.Status = 'Pending'", (err, result) => {
                 if(result.length > 0){
                     let datajson = {}
                     datajson.requestid = []
