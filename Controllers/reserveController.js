@@ -200,12 +200,20 @@ exports.reserve = (req, res) => {
                     })
                     reservedetailquery.forEach((reserve) => {
                         db.query("INSERT INTO RequestDetail (RequestID, timeStart, timeEnd) VALUES ('" + id + "','" + reserve.timeStartString + "','" + reserve.timeEndString + "')", (err, result) => {
-                        if(err){
-                            console.log(err)
-                        }
+                            if(err){
+                                console.log(err)
+                            }
+                            // objectfile.forEach((fileobj) => {
+                            //     const file = req.files[fileobj]
+                            //     file.mv('fileupload/' + file.name, (err) => {
+                            //         if(err)
+                            //             return res.status(500)
+                            //         console.log('File uploaded!')
+                            //     })
+                            // })
                         })
                     })
-                    return res.json({ responseMessage: 'Reserve Complete'})
+                    return res.json({ responseMessage: 'Reserve Complete', requestid: id })
                 })
             } else if((index == reservedetailquery.length -1) && isfound == 1){
                 // console.log('endnddddd')

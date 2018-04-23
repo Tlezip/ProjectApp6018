@@ -48,12 +48,14 @@ exports.reserveDetail = (req, res) => {
     db.query("SELECT uid, Name from UserDetail WHERE Username = '" + username + "'", (err, result) => {
         const { Name, uid } = result[0]
         db.query("SELECT * from Member WHERE Username = '" + username + "' AND RequestID = '" + requestID + "'", (err, result) => {
-            if (result == ''){
+            if (result == '' && req.session.isAdmin != true){
                 return res.send('error')
             }
-            db.query("SELECT * FROM Request WHERE RequestID = '" + requestID + "'", (err, result) => {
+            db.query("SELECT * FROM Request, UserDetail, GroupRoom WHERE Request.RequestID=GroupRoom.RequestID AND UserDetail.Username=Request.Username AND Request.RequestID = '" + requestID + "'", (err, result) => {
                 // console.log(result)
                 let Member = []
+                let name = result[0].Name
+                let username = result[0].Username
                 let datajson = result[0]
                 datajson.timeStart = datajson.timeStart.toLocaleString()
                 datajson.timeEnd = datajson.timeEnd.toLocaleString()
@@ -64,14 +66,30 @@ exports.reserveDetail = (req, res) => {
                             datajson.member.push({ requestid: data.RequestID, username: data.Username})
                         })
                     } 
-                    datajson.name = Name
+                    datajson.name = name
+                    datajson.username = username
                     if(username == datajson.Username){
                         datajson.isReserver = true
                     }
                     else{
                         datajson.isReserver = false
                     }
-                    res.json(datajson)
+                    db.query("SELECT filename from fileupload WHERE RequestID = '" + requestID + "'", (err, result) => {
+                        if(err){
+                            console.log(err)
+                        }
+                        let filename = []
+                        result.forEach((name) => {
+                            filename.push(name.filename)
+                        })
+                        if(result.length > 0){
+                            datajson.file = filename
+                            return res.json(datajson)
+                        } else {
+                            datajson.file = ''
+                            return res.json(datajson)
+                        }
+                    })
                 })
             })
         })

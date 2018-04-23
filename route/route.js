@@ -9,6 +9,7 @@ const groupController = require("../Controllers/groupController")
 const roomController = require("../Controllers/roomController")
 const passwordController = require("../Controllers/passwordController")
 const profileController = require("../Controllers/profileController")
+const fileController = require("../Controllers/fileController")
 const express = require('express')
 const app = express()
 const router = express.Router()
@@ -32,6 +33,7 @@ router.get('/api/roomcreate', auth.isAdmin, apiController.roomcreate)
 router.get('/api/profile', auth.auth, apiController.profileDetail)
 router.get('/api/searchroom', auth.auth, apiController.findroom)
 
+router.get('/filedownload/:id/:filename', fileController.download)
 router.post('/register', registerController.register)
 router.get('/auth', loginController.IsAuth)
 router.post('/login', loginController.postLogin)
@@ -46,9 +48,13 @@ router.post('/changepassword', auth.auth, passwordController.changePassword)
 router.post('/profile', auth.auth, profileController.updateprofile)
 router.post('/changeafterregis', registerController.changeafterregis)
 router.post('/reserve/rejectrepeat', auth.isAdmin, responseReserveController.rejectrepeat)
-// exports.loginPage = () => {
-//     console.log('qwropekwdtgfopdk')
-//     app.get('/login', auth.no_auth, loginPage.getLoginPage)
-// }
+router.post('/fileupload', fileController.upload)
+router.get('/filetest', (req, res) => {
+    return res.download('fileupload/' + 56 + '/ห้องสอบโปรเจ็ค.jpg');
+})
+exports.loginPage = () => {
+    console.log('qwropekwdtgfopdk')
+    app.get('/login', auth.no_auth, loginPage.getLoginPage)
+}
 
 module.exports = router

@@ -14,7 +14,8 @@ db.connect(function(err){
         'CREATE TABLE Room (RoomName VARCHAR(15) PRIMARY KEY, isUpdate INT)',
         'CREATE TABLE RequestDetail (RequestID INT,timeStart TIMESTAMP DEFAULT 0,timeEnd TIMESTAMP DEFAULT 0, FOREIGN KEY (RequestID) REFERENCES Request(RequestID), PRIMARY KEY (RequestID,timeStart,timeEnd))',
         'CREATE TABLE Log (LogID INT AUTO_INCREMENT PRIMARY KEY, Username VARCHAR(16), TIME TIMESTAMP DEFAULT 0, RoomName VARCHAR(15), Status VARCHAR(15) )',
-        'CREATE TABLE GroupRoom (RequestID INT, RoomName VARCHAR(15), FOREIGN KEY (RequestID) REFERENCES Request(RequestID), FOREIGN KEY (RoomName) REFERENCES Room(RoomName), PRIMARY KEY(RequestID,RoomName))'
+        'CREATE TABLE GroupRoom (RequestID INT, RoomName VARCHAR(15), FOREIGN KEY (RequestID) REFERENCES Request(RequestID), FOREIGN KEY (RoomName) REFERENCES Room(RoomName), PRIMARY KEY(RequestID,RoomName))',
+        'CREATE TABLE fileupload (RequestID INT, filename VARCHAR(50), FOREIGN KEY (RequestID) REFERENCES Request(RequestID), PRIMARY KEY(RequestID,filename))'
     ]
     sql.map((query) => {
         db.query(query, function(error, result){

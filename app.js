@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var app = express();
+const fileUpload = require('express-fileupload');
 var mailer = require('express-mailer');
 var router = require('./route/route.js')
 var cookieParser = require('cookie-parser')
@@ -28,6 +29,9 @@ app.use(bodyParser.urlencoded({
     extended: false
 }))
 app.use(bodyParser.json())
+
+app.use(fileUpload());
+app.use(express.static('fileupload'))
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
