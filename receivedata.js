@@ -148,7 +148,9 @@ var server = net.createServer(function(socket) {
 						if(err){
 							console.log(err)
 						}
-						if(result){
+						if(result.length > 0){
+							// console.log('havedata')
+							socket.write('havedata')
 							let reservation = ''
 							let requestid = []
 							console.log('lentgth :',result.length)
@@ -181,7 +183,6 @@ var server = net.createServer(function(socket) {
 									console.log("write done")
 									// console.log(reservation)
 									// console.log('requestid :',requestid)
-									
 									
 								}
 								// console.log('test',reservation)
@@ -224,6 +225,12 @@ var server = net.createServer(function(socket) {
 		// }
 	})
 
+	socket.on('error', function(exception) {
+		console.log('SOCKET ERROR');
+		socket.destroy();
+		return
+		// return
+	})
 
 	console.log(a)
 	if( a != ''){
