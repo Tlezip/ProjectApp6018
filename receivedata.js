@@ -109,7 +109,7 @@ const receiveLog = () => {
 // receiveLog()
 let a = ''
 var server = net.createServer(function(socket) {
-  
+ 
 	socket.on('data', function(data){
 		data = data.toString()
 		console.log(data)
@@ -138,7 +138,7 @@ var server = net.createServer(function(socket) {
 				}
 				if(result){
 					const currentTS = new Date().toLocaleString()
-					console.log(currentTS)
+					console.log('current Time : ',currentTS)
 					db.query(`SELECT Request.RequestID,UserDetail.uid,UserDetail.Username,RequestDetail.timeStart,RequestDetail.timeEnd,Request.isUpdate 
 					FROM GroupRoom, Request, RequestDetail, Member, UserDetail 
 					WHERE Request.RequestID=RequestDetail.RequestID AND Request.RequestID=GroupRoom.RequestID AND 
@@ -148,8 +148,9 @@ var server = net.createServer(function(socket) {
 						if(err){
 							console.log(err)
 						}
+						console.log(result)
 						if(result.length > 0){
-							// console.log('havedata')
+							console.log('havedata')
 							socket.write('havedata')
 							let reservation = ''
 							let requestid = []
@@ -163,7 +164,10 @@ var server = net.createServer(function(socket) {
 								if(uid == undefined){
 									keepuid = ''
 								}
-								reservation += (keepuid + "," + Username + "," + timeStart.getTime() + "," + timeEnd.getTime() + "\n")
+								console.log(timeStart.getTime())
+								console.log(timeStart)
+								console.log(timeStart.toLocaleString())
+								reservation += (keepuid + "," + Username + "," + (timeStart.getTime()/1000) + "," + (timeEnd.getTime()/1000) + "\n")
 								// console.log(index)
 								if(index == result.length-1 ){
 									socket.write(reservation)
@@ -245,8 +249,8 @@ var server = net.createServer(function(socket) {
 
 console.log('a :', a)
 
-server.listen(8107, function(){
-	console.log('Now listening on 8107')
+server.listen(8100, function(){
+	console.log('Now listening on 8100')
 })
 
 
