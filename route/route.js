@@ -49,6 +49,7 @@ router.post('/profile', auth.auth, profileController.updateprofile)
 router.post('/changeafterregis', registerController.changeafterregis)
 router.post('/reserve/rejectrepeat', auth.isAdmin, responseReserveController.rejectrepeat)
 router.post('/fileupload', fileController.upload)
+router.post('/forgotpassword', passwordController.forgotpassword)
 router.get('/filetest', (req, res) => {
     return res.download('fileupload/' + 56 + '/ห้องสอบโปรเจ็ค.jpg');
 })

@@ -28,7 +28,7 @@ exports.register = (req, res) => {
                 message: {  // data to view template, you can access as - user.name
                     name: 'Arjun PHP',
                     message: password,
-                    url: 'http://localhost:8080/#/changepassword/' + token
+                    url: 'http://161.246.6.1:8007/#/changepassword/' + token
                 }
                 }, function (err) {
                 if (err) {
