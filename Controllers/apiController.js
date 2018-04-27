@@ -276,3 +276,9 @@ exports.profileDetail = (req, res) => {
         res.json({ uid:uid, username:username, department:Department, branch:Branch, name:Name, email:Email, sec:Sec })
     })
 }
+
+exports.userinfo = (req, res) => {
+    db.query("SELECT Username, Email, uid FROM UserDetail", (err, result) => {
+        res.json(result)
+    })
+}

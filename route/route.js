@@ -32,6 +32,7 @@ router.get('/api/creategroup', apiController.groupCreate)
 router.get('/api/roomcreate', auth.isAdmin, apiController.roomcreate)
 router.get('/api/profile', auth.auth, apiController.profileDetail)
 router.get('/api/searchroom', auth.auth, apiController.findroom)
+router.get('/api/userinfo', auth.isAdmin, apiController.userinfo)
 
 router.get('/filedownload/:id/:filename', fileController.download)
 router.post('/register', registerController.register)
