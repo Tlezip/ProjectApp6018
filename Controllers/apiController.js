@@ -282,3 +282,10 @@ exports.userinfo = (req, res) => {
         res.json(result)
     })
 }
+
+exports.matchuid = (req, res) => {
+    const { id, uid } = req.body
+    db.query("UPDATE UserDetail SET uid = '" + uid + "' WHERE Username = '" + id + "'", (err , result) => {
+        return res.json({ responseMessage: 'uid Complete'})
+    })
+}

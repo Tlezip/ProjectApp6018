@@ -115,20 +115,48 @@ var server = net.createServer(function(socket) {
 		console.log(data)
 		arrayOfData = data.split(/,|\n|\r/)
 		let result = arrayOfData.filter(word => word.localeCompare(''))
-		if( result[0] == 'SendReservation'){
-			a = result[1]
-			sendReservation(result[1], (val) => {
-				// console.log('val :',val)
-				socket.write(val)
-			})
-			// broadcast('1234')
-			console.log('55555555555555555555')
-			console.log(result[1])
-			result.splice(0,1)
-			console.log(result[0],' : ',result[1])
+		if( result[0] == 'Register'){
+			for(var i=1 ; i<result.length && i+2 <= result.length ; i+=2){
+				db.query("UPDATE UserDetail SET uid = '" + result[i+1] + "' WHERE Username = '" + result[i] + "'", (err, result) => {
+					if(err){
+						console.log(err)
+					}
+					if(i+2 <= result.length){
+						console.log('match uid Complete')
+						return
+					}
+				})
+			}
 		}
 		else if( result [0] == 'LOG'){
-
+			const room = result[1]
+			for (var i=2 ; i<result.length && i+3 <= result.length ; i+=3){
+				if(result[i] == ''){
+					console.log(i)
+				}
+				// if(roomName == 'finish'){
+				// 	console.log('break')
+				// 	break;
+				// }
+				const epochTime = result[i+1]
+				const date = new Date(0)
+				date.setUTCSeconds(epochTime)
+				const dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+				var sql = "INSERT INTO Log (uid, RoomName, Time, Status) VALUES ('" + result[i] + "','" + result[1] + "','" + dateString + "','" + result[i+2] + "')"
+				db.query(sql , (err, result) => {
+					if (err) throw err
+					console.log("inserted into LOG")
+					// if(result[a] == "finish" && i == a-3){
+					// 	console.log('fdewgdfgsdfdfg')
+						// socket.end()
+						// return
+					// }
+					if(i+3 <= result.length){
+						console.log("insert Log complete")
+						return
+					}
+				})
+			}
 		}
 		else if( result[0] == 'checkreservation' ){ //ReceiveLog
 			const room = result[1]

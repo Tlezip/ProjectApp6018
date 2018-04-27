@@ -35,6 +35,7 @@ router.get('/api/searchroom', auth.auth, apiController.findroom)
 router.get('/api/userinfo', auth.isAdmin, apiController.userinfo)
 
 router.get('/filedownload/:id/:filename', fileController.download)
+router.post('/api/userinfo', auth.isAdmin, apiController.matchuid)
 router.post('/register', registerController.register)
 router.get('/auth', loginController.IsAuth)
 router.post('/login', loginController.postLogin)
