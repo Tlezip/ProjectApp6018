@@ -112,12 +112,35 @@ var server = net.createServer(function(socket) {
  
 	socket.on('data', function(data){
 		data = data.toString()
-		console.log(data)
+		//console.log(data)
 		arrayOfData = data.split(/,|\n|\r/)
 		let result = arrayOfData.filter(word => word.localeCompare(''))
-		if( result[0] == 'Register'){
+		if( result[0] == 'REGISTER'){
+			console.log('registering')
 			for(var i=1 ; i<result.length && i+2 <= result.length ; i+=2){
+				const uid = result[i+1]
+				const username = result[i]
+				db.query("SELECT * FROM UserDetail WHERE Username = '" + result[i] + "' AND Disabled = 0", (err, result) => {
+					console.log(result)
+					const { Username, Password, Department, Branch, Name, Email, Sec, Admin } = result[0]
+					if(result[0].uid == ''){
+						db.query("UPDATE UserDetail SET uid = '" + uid + "' WHERE Username = '" + Username + "'", (err, result) => {
+							
+						})
+					}
+					else {
+						db.query("UPDATE UserDetail SET Disabled = '1' WHERE Username = '" + Username + "' AND Disabled = 0", (err, result) => {
+							if(err){
+								console.log(err)
+							}
+							db.query("INSERT INTO UserDetail ( uid, Username, Password, Department, Branch, Name, Email, Sec, Disabled, Admin ) VALUES ('" + uid + "','" + Username + "','" + Password + "','" + Department + "','" + Branch + "','" + Name + "','" + Email + "','" + Sec + "','0','" + Admin + "')", (err, result) => {
+								console.log(err)
+							})
+						})
+					}
+				})
 				db.query("UPDATE UserDetail SET uid = '" + result[i+1] + "' WHERE Username = '" + result[i] + "'", (err, result) => {
+					console.log(result)
 					if(err){
 						console.log(err)
 					}
@@ -129,7 +152,9 @@ var server = net.createServer(function(socket) {
 			}
 		}
 		else if( result [0] == 'LOG'){
+			console.log('receiving LOG')
 			const room = result[1]
+			console.log('3 result :',result[0],result[1],result[2])
 			for (var i=2 ; i<result.length && i+3 <= result.length ; i+=3){
 				if(result[i] == ''){
 					console.log(i)
@@ -142,7 +167,7 @@ var server = net.createServer(function(socket) {
 				const date = new Date(0)
 				date.setUTCSeconds(epochTime)
 				const dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
-				var sql = "INSERT INTO Log (uid, RoomName, Time, Status) VALUES ('" + result[i] + "','" + result[1] + "','" + dateString + "','" + result[i+2] + "')"
+				var sql = "INSERT INTO Log (Username, RoomName, Time, Status) VALUES ('" + result[i] + "','" + room + "','" + dateString + "','" + result[i+2] + "')"
 				db.query(sql , (err, result) => {
 					if (err) throw err
 					console.log("inserted into LOG")
@@ -151,7 +176,7 @@ var server = net.createServer(function(socket) {
 						// socket.end()
 						// return
 					// }
-					if(i+3 <= result.length){
+					if(i+3 > result.length){
 						console.log("insert Log complete")
 						return
 					}
