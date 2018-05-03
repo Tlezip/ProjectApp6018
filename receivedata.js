@@ -63,7 +63,7 @@ const receiveLog = () => {
 			// 	console.log('qweeeeeee')
 			// 	return
 			// }
-			for (var i=1 ; i<result.length && i+3 <= result.length ; i+=3){
+			for (var i=2 ; i<result.length && i+3 <= result.length ; i+=3){
 				if(result[i] == ''){
 					console.log(i)
 				}
