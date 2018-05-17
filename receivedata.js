@@ -112,7 +112,7 @@ var server = net.createServer(function(socket) {
  
 	socket.on('data', function(data){
 		data = data.toString()
-		//console.log(data)
+		console.log(data)
 		arrayOfData = data.split(/,|\n|\r/)
 		let result = arrayOfData.filter(word => word.localeCompare(''))
 		if( result[0] == 'REGISTER'){
@@ -129,12 +129,14 @@ var server = net.createServer(function(socket) {
 						})
 					}
 					else {
-						db.query("UPDATE UserDetail SET Disabled = '1' WHERE Username = '" + Username + "' AND Disabled = 0", (err, result) => {
-							if(err){
-								console.log(err)
-							}
-							db.query("INSERT INTO UserDetail ( uid, Username, Password, Department, Branch, Name, Email, Sec, Disabled, Admin ) VALUES ('" + uid + "','" + Username + "','" + Password + "','" + Department + "','" + Branch + "','" + Name + "','" + Email + "','" + Sec + "','0','" + Admin + "')", (err, result) => {
-								console.log(err)
+						db.query("SELECT MAX(Disabled) max FROM UserDetail WHERE Username = '" + Username + "'", (err,result) => {
+							db.query("UPDATE UserDetail SET Disabled = '" + (result[0].max + 1) + "' WHERE Username = '" + Username + "' AND Disabled = 0", (err, result) => {
+								if(err){
+									console.log(err)
+								}
+								//db.query("INSERT INTO UserDetail ( uid, Username, Password, Department, Branch, Name, Email, Sec, Disabled, Admin ) VALUES ('" + uid + "','" + Username + "','" + Password + "','" + Department + "','" + Branch + "','" + Name + "','" + Email + "','" + Sec + "','0','" + Admin + "')", (err, result) => {
+								//	console.log(err)
+								//})
 							})
 						})
 					}
