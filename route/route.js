@@ -53,6 +53,7 @@ router.post('/reserve/rejectrepeat', auth.isAdmin, responseReserveController.rej
 router.post('/fileupload', fileController.upload)
 router.post('/registerupload', fileController.uploadregister)
 router.post('/forgotpassword', passwordController.forgotpassword)
+router.post('/changeemail', registerController.changeemail)
 router.get('/filetest', (req, res) => {
     return res.download('fileupload/' + 56 + '/ห้องสอบโปรเจ็ค.jpg');
 })
