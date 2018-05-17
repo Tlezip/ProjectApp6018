@@ -14,7 +14,7 @@ exports.register = (req, res) => {
                 length: 25,
                 numbers: true
             })
-          db.query("INSERT INTO UserDetail ( Username, Name, Email, Password, Disabled, Admin, token ) VALUES ('" + req.body.studentid + "','" + req.body.name + " " + req.body.surname + "','" + email + "','" + password + "','0','0','"+ token +"')", (err, result) => {
+          db.query("INSERT INTO UserDetail ( Username, Name, Email, Password, Disabled, Admin, token ) VALUES ('" + req.body.studentid + "','" + req.body.name + " " + req.body.surname + "','" + email + "','" + password + "','0','" + req.body.userRole + "','"+ token +"')", (err, result) => {
             if(err){
                 console.log(err)
             }

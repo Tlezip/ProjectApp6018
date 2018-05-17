@@ -31,7 +31,7 @@ exports.forgotpassword = (req, res) => {
             otherProperty: 'Other Property',
             message: {  // data to view template, you can access as - user.name
                 name: 'Arjun PHP',
-                message: 'set to be NULL',
+                message: 'We\'ve reset your Password Please Click Link below',
                 url: 'http://161.246.6.1:8007/#/changepassword/' + token
             }
             }, function (err) {
