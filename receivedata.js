@@ -117,6 +117,29 @@ var server = net.createServer(function(socket) {
 		let result = arrayOfData.filter(word => word.localeCompare(''))
 		if( result[0] == 'Register'){
 			for(var i=1 ; i<result.length && i+2 <= result.length ; i+=2){
+				const uid = result[i+1]
+				const username = result[i]
+				db.query("SELECT * FROM UserDetail WHERE Username = '" + result[i] + "' AND Disabled = 0", (err, result) => {
+					console.log(result)
+					const { Username, Password, Department, Branch, Name, Email, Sec, Admin } = result[0]
+					if(result[0].uid == ''){
+						db.query("UPDATE UserDetail SET uid = '" + uid + "' WHERE Username = '" + Username + "'", (err, result) => {
+							
+						})
+					}
+					else {
+						db.query("SELECT MAX(Disabled) max FROM UserDetail WHERE Username = '" + Username + "'", (err,result) => {
+							db.query("UPDATE UserDetail SET Disabled = '" + (result[0].max + 1) + "' WHERE Username = '" + Username + "' AND Disabled = 0", (err, result) => {
+								if(err){
+									console.log(err)
+								}
+								//db.query("INSERT INTO UserDetail ( uid, Username, Password, Department, Branch, Name, Email, Sec, Disabled, Admin ) VALUES ('" + uid + "','" + Username + "','" + Password + "','" + Department + "','" + Branch + "','" + Name + "','" + Email + "','" + Sec + "','0','" + Admin + "')", (err, result) => {
+								//	console.log(err)
+								//})
+							})
+						})
+					}
+				})
 				db.query("UPDATE UserDetail SET uid = '" + result[i+1] + "' WHERE Username = '" + result[i] + "'", (err, result) => {
 					if(err){
 						console.log(err)
