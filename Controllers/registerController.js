@@ -48,7 +48,6 @@ exports.register = (req, res) => {
 }
 
 exports.changeafterregis = (req, res) => {
-    console.log(req.body)
     const { newpassword, repeatPassword, token } = req.body
     // console.log(req.body)
     if(newpassword == repeatPassword){
@@ -65,5 +64,35 @@ exports.changeafterregis = (req, res) => {
                 return res.json({ responseMessage: 'changeregis Complete'})
             })
         }
+    })
+}
+
+exports.changeemail = (req, res) => {
+    const { newemail, username } = req.body
+
+    db.query("SELECT * FROM UserDetail WHERE Username = '" + username + "'", (err, result) => {
+        const token = result[0].token
+        if(token){
+            res.mailer.send('email', {
+                    to: newemail, // REQUIRED. This can be a comma delimited string just like a normal email to field.  
+                    subject: 'Door-Lock Access Controll : ' + username + " registered", // REQUIRED. 
+                    otherProperty: 'Other Property',
+                    message: {  // data to view template, you can access as - user.name
+                        name: 'Arjun PHP',
+                        message: result[0].password,
+                        url: 'http://161.246.6.1:8007/#/changepassword/' + token
+                    }
+            }, function (err) {
+                if (err) {
+                    // handle error 
+                    console.log(err);
+                    return res.json({ responseMessage: 'can\'t register '})
+                    return;
+                }
+            });
+        }
+        db.query("UPDATE UserDetail SET Email = '" + newemail + "' WHERE Username = '" + username + "'", (err, result) => {
+            return res.json({ responseMessage: 'change email Complete'})
+        })
     })
 }
